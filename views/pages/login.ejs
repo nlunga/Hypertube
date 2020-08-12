@@ -1,0 +1,28 @@
+<%- include('./../partials/header')%>
+
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="/index">Hypertube</a>
+        <ul class="nav justify-content-end">
+            <li class="nav-item">
+            <a class="nav-link active" href="/login">Sign In</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="/signup">Sign Up</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link disabled" href="/profile" tabindex="-1" aria-disabled="true">Profile</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="container">
+        <form action="/login" method="post">
+            <input type="text" name="username" placeholder="username or email">
+            <input type="password" name="password" id="" placeholder="password">
+            <input type="submit" class="btn btn-primary" value="login">
+        </form>
+    </div>
+
+<%- include('./../partials/footer')%>
