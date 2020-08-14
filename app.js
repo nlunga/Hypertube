@@ -13,6 +13,7 @@ const port = process.env.PORT;
 const index = require('./routes/index');
 const login = require('./routes/login');
 const register = require('./routes/register');
+const confirmationMail = require('./routes/confirmationMail');
 const logout = require('./routes/logout');
 
 // set the view engine to ejs
@@ -30,6 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/login', login);
 app.use('/signup', register);
+app.use('/confirmation', confirmationMail);
 app.use('/logout', logout);
 
 http.listen(port, () => console.log(`Server running on port ${port}!`));

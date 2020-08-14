@@ -17,5 +17,33 @@
             </li>
         </ul>
     </nav>
-
+    <div class="container">
+        <form action="/signup" method="post">
+            <div class="form-groups">
+                <label for="firstname">Firstname</label><br>
+                <input type="text" name="firstname" id="firstname" placeholder="Firstname">
+            </div>
+            <div class="form-groups">
+                <label for="lastname">Lastname</label><br>
+                <input type="text" name="lastname" id="lastname" placeholder="Lastname">
+            </div>
+            <div class="form-groups">
+                <label for="email">Email</label><br>
+                <input type="email" name="email" id="email" placeholder="Email">
+            </div>
+            <div class="form-groups">
+                <label for="username">Username</label><br>
+                <input type="text" name="username" id="username" placeholder="Username">
+            </div>
+            <div class="form-groups">
+                <label for="passord">Password</label><br>
+                <input type="password" name="password" id="password" placeholder="Password">
+            </div>
+            <div class="form-groups">
+                <label for="confPassord">Password</label><br>
+                <input type="password" name="confPassword" id="confPassword" placeholder="Confirm Password">
+            </div>
+            <input type="submit" class="btn btn-primary" value="register">
+        </form>
+    </div>
 <%- include('./../partials/footer')%>
