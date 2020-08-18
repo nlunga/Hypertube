@@ -7,6 +7,7 @@ const nodemailer = require('nodemailer');
 const { v1: uuidv1 } = require('uuid');
 const saltRounds = 10;
 const emailToken = uuidv1();
+const passport = require('passport');
 
 const dotenv = require('dotenv');
 
@@ -14,7 +15,8 @@ dotenv.config();
 
 const port = process.env.PORT;
 
-router.get('/', (req, res) => {
+
+router.get('/', (req, res) => { 
     res.render('pages/register', {
         title : "Sign Up"
     });

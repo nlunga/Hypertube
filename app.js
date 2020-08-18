@@ -13,8 +13,12 @@ const port = process.env.PORT;
 const index = require('./routes/index');
 const login = require('./routes/login');
 const register = require('./routes/register');
+const fortyTwoRegister = require('./routes/registerWith42');
 const confirmationMail = require('./routes/confirmationMail');
+const forgotPassword = require('./routes/forgotPassword');
+const resetPassword = require('./routes/resetPassword');
 const logout = require('./routes/logout');
+const { proppatch } = require('./routes/login');
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
@@ -31,7 +35,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/login', login);
 app.use('/signup', register);
+app.use('/auth/42', fortyTwoRegister);
 app.use('/confirmation', confirmationMail);
+app.use('/forgotPassword', forgotPassword);
+app.use('/resetPassword', resetPassword)
 app.use('/logout', logout);
 
 http.listen(port, () => console.log(`Server running on port ${port}!`));
