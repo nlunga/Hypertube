@@ -8,5 +8,6 @@ router.get('/', redirectLogin, (req, res) => {
         title : `${user.firstname}'s Profile`,
         data: user
     });
-})
+});
+
 module.exports = router;

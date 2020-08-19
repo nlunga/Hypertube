@@ -47,12 +47,16 @@ router.post('/', [
                             req.session.email = result[0].email;
                             req.session.password = result[0].password;
                             
-                            let user = req.session;
-
-                            console.log('logged in');
-                            res.render('pages/test',{
-                                title: 'Entry',
-                                data: user
+                            con.query(`SELECT * FROM images WHERE username = '${req.body.username}' LIMIT 1`, (err, tableVal) => {
+                                if (err) throw err;
+                                req.session.image = tableVal[0].imagePath;
+                                let user = req.session;
+    
+                                console.log('logged in');
+                                res.render('pages/test',{
+                                    title: 'Entry',
+                                    data: user
+                                });
                             });
                         }else {
                             res.redirect("/login");

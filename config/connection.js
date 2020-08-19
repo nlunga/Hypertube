@@ -15,6 +15,10 @@ var conInit = mysql.createConnection({
     password: ""
 });
 
+conInit.connect((err) =>{
+    if (err) throw err;
+});
+
 var con = mysql.createConnection({
     host: dbHost,
     user: dbUser,
@@ -23,13 +27,10 @@ var con = mysql.createConnection({
     database: dbName
 });
 
+
 con.connect((err) =>{
     if (err) throw err;
     console.log('Database Connected');
-});
-
-conInit.connect((err) =>{
-    if (err) throw err;
 });
 
 module.exports = {

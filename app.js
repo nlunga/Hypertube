@@ -27,6 +27,7 @@ const forgotPassword = require('./routes/forgotPassword');
 const resetPassword = require('./routes/resetPassword');
 const entryPoint = require('./routes/entryPoint');
 const profile = require('./routes/profile');
+const profilePic = require('./routes/profilePic');
 const logout = require('./routes/logout');
 const { proppatch } = require('./routes/login');
 
@@ -74,6 +75,7 @@ app.use('/forgotPassword', forgotPassword);
 app.use('/resetPassword', resetPassword);
 app.use('/test', entryPoint);
 app.use('/profile', profile);
+app.use('/set-profilePic', profilePic);
 app.use('/logout', logout);
 
 http.listen(port, () => console.log(`Server running on port ${port}!`));

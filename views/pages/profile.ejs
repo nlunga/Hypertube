@@ -20,5 +20,21 @@
             <% } %>
         </ul>
     </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <% if (!data.image) {%>
+                    <img class="profilePic" src="https://clinicforspecialchildren.org/wp-content/uploads/2016/08/avatar-placeholder.gif" alt="profile image avatar">
+                <% } else { %>
+                    <img class="profilePic" src="<%=data.image%>" alt="profile image avatar">
+                <% } %>
+                <form id="myform" class="form-container" action="/set-profilePic" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="myImage">
+                    <input type="submit" value="Upload">
+                </form>
+            </div>
+            <div class="col-md-8">col-8</div>
+        </div>
+    </div>
 
 <%- include('./../partials/footer')%>
