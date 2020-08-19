@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
 const {conInit, con} = require('../config/connection');
+const {redirectLogin, redirectDashboard} = require('./accessControls');
 const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
 
@@ -9,9 +10,11 @@ dotenv.config();
 
 const port = process.env.PORT;
 
-router.get('/', (req, res) => {
+router.get('/', redirectDashboard, (req, res) => {
+    let user = req.session;
     res.render('pages/forgotPassword', {
-        title : "Forgot Password"
+        title : "Forgot Password",
+        data: user
     });
 });
 

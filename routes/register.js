@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const { check, validationResult } = require('express-validator');
 const {conInit, con} = require('../config/connection');
+const {redirectLogin, redirectDashboard} = require('./accessControls');
 const nodemailer = require('nodemailer');
 const { v1: uuidv1 } = require('uuid');
 const saltRounds = 10;
@@ -16,9 +17,11 @@ dotenv.config();
 const port = process.env.PORT;
 
 
-router.get('/', (req, res) => { 
+router.get('/', redirectDashboard, (req, res) => { 
+    let user = req.session;
     res.render('pages/register', {
-        title : "Sign Up"
+        title : "Sign Up",
+        data: user
     });
 });
 

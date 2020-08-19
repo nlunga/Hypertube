@@ -15,9 +15,11 @@ const port = process.env.PORT;
 
 router.get('/:token', (req, res) => {
     const userToken = req.params.token;
+    let user = req.session;
     res.render('pages/resetPassword', {
         title: "Reset Password",
-        token: userToken
+        token: userToken,
+        data: user
     });
 });
 

@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const {conInit, con} = require('../config/connection');
+const {redirectLogin, redirectDashboard} = require('./accessControls');
 
-router.get('/:id', /* redirectDashboard, */ (req, res) =>{
+router.get('/:id', redirectDashboard, (req, res) =>{
     let token = req.params.id;
     let sql = `UPDATE users SET verified = 1 WHERE token = '${token}'`;
     con.query(sql, (err, result) => {

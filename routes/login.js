@@ -3,11 +3,14 @@ const router = express.Router();
 var mysql = require('mysql');
 const { check, validationResult } = require('express-validator');
 const {conInit, con } = require('../config/connection');
+const {redirectLogin, redirectDashboard} = require('./accessControls');
 const bcrypt = require('bcrypt');
 
-router.get('/', (req, res) => {
+router.get('/', redirectDashboard, (req, res) => {
+    let user = req.session;
     res.render('pages/login', {
-        title : "Login"
+        title : "Login",
+        data: user
     });
 });
 
@@ -37,17 +40,19 @@ router.post('/', [
                         res.redirect("/login");
                     }else if (result[0].verified === 1) {
                         if (response === true) {
-                            /* req.session.userId = result[0].id;
+                            req.session.userId = result[0].id;
                             req.session.firstname = result[0].firstName;
                             req.session.lastname = result[0].lastName;
                             req.session.username = result[0].username;
                             req.session.email = result[0].email;
                             req.session.password = result[0].password;
                             
-                            let user = req.session; */
-                            console.log('loggen in');
+                            let user = req.session;
+
+                            console.log('logged in');
                             res.render('pages/test',{
-                                title: 'Entry'
+                                title: 'Entry',
+                                data: user
                             });
                         }else {
                             res.redirect("/login");

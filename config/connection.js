@@ -1,18 +1,26 @@
 const mysql = require('mysql');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+
+const dbHost = process.env.HOST;
+const dbUser = process.env.USER;
+const dbName = process.env.DB_NAME;
 
 var conInit = mysql.createConnection({
-    host: "localhost",
-    user: "root",
+    host: dbHost,
+    user: dbUser,
     port: 3306,
     password: ""
 });
 
 var con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
+    host: dbHost,
+    user: dbUser,
     port: 3306,
     password: "",
-    database: "Hypertube"
+    database: dbName
 });
 
 con.connect((err) =>{
