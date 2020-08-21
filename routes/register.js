@@ -45,7 +45,12 @@ router.post('/', [
     .trim()
     .escape()
     .isLength({ min: 4 }),
-    check('password').isLength({ min: 5 }),
+    check('password')
+        .isLength({ min:8 }).withMessage('Password must be at least 8 characters in length.')
+        .matches('[0-9]').withMessage('Password must contain at least 1 number.')
+        .matches('[a-z]').withMessage('Password must contain at least 1 lowercase letter.')
+        .matches('[A-Z]').withMessage('Password must contain at least 1 uppercase letter.')
+        .matches(['[^A-Za-z0-9]']).withMessage('Password must contain at least 1 special character.'),
     check('confPassword').custom((value, { req }) => { 
         if (value !== req.body.password) {
           throw new Error('Password confirmation does not match password');
@@ -61,7 +66,7 @@ router.post('/', [
     }else {
         bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
             var confirmed = 0;
-            con.query("INSERT INTO users (firstName, lastName, userName, email, password, verified, token) VALUES (?, ?, ?, ?, ?, ?, ?)", [req.body.firstname, req.body.lastname, req.body.username, req.body.email, hash, confirmed, emailToken], (err, result) => {
+            con.query("INSERT INTO users (firstName, lastName, userName, email, password, languagePreference, verified, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [req.body.firstname, req.body.lastname, req.body.username, req.body.email, hash, "English", confirmed, emailToken], (err, result) => {
                 if (err) throw err;
                 console.log("1 record inserted");
             });

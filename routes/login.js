@@ -16,12 +16,17 @@ router.get('/', redirectDashboard, (req, res) => {
 
 router.post('/', [
   check('username')
-  .isAlphanumeric()
-  .not().isEmpty()
-  .trim()
-  .escape()
-  .isLength({ min: 4 }),
-  check('password').isLength({ min: 5 })
+    .isAlphanumeric()
+    .not().isEmpty()
+    .trim()
+    .escape()
+    .isLength({ min: 4 }).withMessage('Username must be at least 4 characters in length.'),
+  check('password')
+    .isLength({ min:8 }).withMessage('Password must be at least 8 characters in length.')
+    .matches('[0-9]').withMessage('Password must contain at least 1 number.')
+    .matches('[a-z]').withMessage('Password must contain at least 1 lowercase letter.')
+    .matches('[A-Z]').withMessage('Password must contain at least 1 uppercase letter.')
+    .matches(['[^A-Za-z0-9]']).withMessage('Password must contain at least 1 special character.')
 ], (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()){
@@ -49,7 +54,11 @@ router.post('/', [
                             
                             con.query(`SELECT * FROM images WHERE username = '${req.body.username}' LIMIT 1`, (err, tableVal) => {
                                 if (err) throw err;
-                                req.session.image = tableVal[0].imagePath;
+                                if (tableVal.length === 0) {
+                                    req.session.image = undefined
+                                }else {
+                                    req.session.image = tableVal[0].imagePath;
+                                }
                                 let user = req.session;
     
                                 console.log('logged in');

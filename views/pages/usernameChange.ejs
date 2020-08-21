@@ -1,0 +1,25 @@
+<%- include('./../partials/header')%>
+
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="/">Hypertube</a>
+        <ul class="nav justify-content-end">
+            <% if (!data.userId) { %>
+                <li class="nav-item">
+                <a class="nav-link active" href="/login">Sign In</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="/signup">Sign Up</a>
+                </li>
+            <% } else { %>
+                <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+                </li>
+            <% } %>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <p>You have changed your username to <%=data.username%>, please logout and login with your new username</p>
+    </div>
+
+<%- include('./../partials/footer')%>
