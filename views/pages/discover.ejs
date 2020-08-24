@@ -21,6 +21,12 @@
         </ul>
     </nav>
     <div class="container">
-        <p>YOU are In</p>
+        <% if (popular !== undefined) { %>
+            <% popular.forEach((popularMovies) => { %>
+                <a href="/title/<%=popularMovies.id%>">
+                    <img src="https://image.tmdb.org/t/p/w185/<%=popularMovies.poster_path%>" alt="<%=popularMovies.title%>">
+                </a>
+            <% }) %>
+        <% } %>
     </div>
 <%- include('./../partials/footer')%>

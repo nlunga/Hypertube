@@ -8,7 +8,7 @@ const redirectLogin = (req, res, next) => {
 
 const redirectDashboard = (req, res, next) => {
     if (req.session.userId) {
-        res.redirect('/test');
+        res.redirect('/discover');
     } else {
         next();
     }

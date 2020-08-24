@@ -59,13 +59,8 @@ router.post('/', [
                                 }else {
                                     req.session.image = tableVal[0].imagePath;
                                 }
-                                let user = req.session;
     
-                                console.log('logged in');
-                                res.render('pages/test',{
-                                    title: 'Entry',
-                                    data: user
-                                });
+                                return res.redirect('/discover');
                             });
                         }else {
                             res.redirect("/login");

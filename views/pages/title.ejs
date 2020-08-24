@@ -1,0 +1,38 @@
+<%- include('./../partials/header')%>
+
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="/index">Hypertube</a>
+        <ul class="nav justify-content-end">
+            <% if (!data.userId) { %>
+                <li class="nav-item">
+                <a class="nav-link active" href="/login">Sign In</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="/signup">Sign Up</a>
+                </li>
+            <% } else { %>
+                <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="/profile">Profile</a>
+                </li>
+            <% } %>
+        </ul>
+    </nav>
+    <div class="container">
+        popularity: <%=mediaInfo.popularity%><br>
+        vote_count: <%=mediaInfo.vote_count%><br>
+        video: <%=mediaInfo.video%><br>
+        poster_path:  <img src="https://image.tmdb.org/t/p/w185/<%=mediaInfo.poster_path%>" alt="<%=mediaInfo.title%>"><br>
+        id: <%=mediaInfo.id%><br>
+        adult: <%=mediaInfo.adult%><br>
+        backdrop_path: <img src="https://image.tmdb.org/t/p/w500/<%=mediaInfo.backdrop_path%>" alt="<%=mediaInfo.title%>"><br>
+        original_language: <%=mediaInfo.original_language%><br>
+        original_title: <%=mediaInfo.original_title%><br>
+        genre_ids: <%=mediaInfo.genre_ids%><br>
+        title: <%=mediaInfo.title%><br>
+        vote_average: <%=mediaInfo.vote_average%><br>
+        overview: <%=mediaInfo.overview%>
+    </div>
+<%- include('./../partials/footer')%>

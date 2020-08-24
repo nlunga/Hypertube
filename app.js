@@ -29,6 +29,7 @@ const entryPoint = require('./routes/entryPoint');
 const profile = require('./routes/profile');
 const profilePic = require('./routes/profilePic');
 const settings = require('./routes/settings');
+const viewMore = require('./routes/viewMore');
 const logout = require('./routes/logout');
 const { proppatch } = require('./routes/login');
 
@@ -74,10 +75,11 @@ app.use('/auth/42', fortyTwoRegister);
 app.use('/confirmation', confirmationMail);
 app.use('/forgotPassword', forgotPassword);
 app.use('/resetPassword', resetPassword);
-app.use('/test', entryPoint);
+app.use('/discover', entryPoint);
 app.use('/profile', profile);
 app.use('/set-profilePic', profilePic);
 app.use('/settings', settings);
+app.use('/title', viewMore);
 app.use('/logout', logout);
 
 http.listen(port, () => console.log(`Server running on port ${port}!`));
