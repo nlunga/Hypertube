@@ -11,6 +11,16 @@
                 <a class="nav-link" href="/signup">Sign Up</a>
                 </li>
             <% } else { %>
+                <div class="dropdown show">
+                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Discover
+                    </a>
+                  
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                      <a class="dropdown-item" href="/discover/movies">movies</a>
+                      <a class="dropdown-item" href="/discover/tv">tv series</a>
+                    </div>
+                  </div>
                 <li class="nav-item">
                 <a class="nav-link" href="/logout">Logout</a>
                 </li>
@@ -21,7 +31,7 @@
         </ul>
     </nav>
     <div class="container">
-        <% if (popular !== undefined) { %>
+        <% if (popular !== undefined && isMovie === true) { %>
             <%var i = 1; %>
             <div class="row">
                 <% popular.forEach((popularMovies) => { %>                
@@ -40,15 +50,49 @@
                     <%i++;%>
                 <% }) %>
                 <% if (totalPages > 1) { %>
-                    <a class="btn btn-primary" href="/discover/page=1" role="button">First</a>
-                    <a class="btn btn-primary" href="/discover/page=1" role="button">1</a>
-                    <a class="btn btn-primary" href="/discover/page=2" role="button">2</a>
-                    <a class="btn btn-primary" href="/discover/page=3" role="button">3</a>
-                    <a class="btn btn-primary" href="/discover/page=4" role="button">4</a>
-                    <a class="btn btn-primary" href="/discover/page=<%=totalPages%>" role="button">last</a>
+                    <%//if (discMovie == false) { %>
+                        <a class="btn btn-primary" href="/discover/page=1" role="button">First</a>
+                        <a class="btn btn-primary" href="/discover/page=1" role="button">1</a>
+                        <a class="btn btn-primary" href="/discover/page=2" role="button">2</a>
+                        <a class="btn btn-primary" href="/discover/page=3" role="button">3</a>
+                        <a class="btn btn-primary" href="/discover/page=4" role="button">4</a>
+                        <a class="btn btn-primary" href="/discover/page=<%=totalPages%>" role="button">last</a>
+                    <%// } else { %>
+                        <a class="btn btn-primary" href="/discover/movies/page=1" role="button">First</a>
+                        <a class="btn btn-primary" href="/discover/movies/page=1" role="button">1</a>
+                        <a class="btn btn-primary" href="/discover/movies/page=2" role="button">2</a>
+                        <a class="btn btn-primary" href="/discover/movies/page=3" role="button">3</a>
+                        <a class="btn btn-primary" href="/discover/movies/page=4" role="button">4</a>
+                        <a class="btn btn-primary" href="/discover/movies/page=<%=totalPages%>" role="button">last</a>
+                    <%// } %>
                 <% } %>
             </div>
-            
+        <% } else if (popular !== undefined && isMovie === false) {%>
+            <div class="row">
+                <% popular.forEach((popularMovies) => { %>                
+                    <div class="col-lg-2">
+                        <a href="/title/tv/<%=pageNo%>/<%=popularMovies.id%>">
+                            <!-- <div class="col-lg-20">
+                                <p class="mt-5 mt-lg-3"><%///=popularMovies.title%></p>
+                            </div> -->
+                            <img src="https://image.tmdb.org/t/p/w185/<%=popularMovies.poster_path%>" alt="<%=popularMovies.title%>"><br>
+                        </a>
+                        <small id="releaseDate" class="text-muted">Released <% var mydate = new Date(popularMovies.first_air_date);%> <%=mydate.toDateString();%></small>
+                    </div>
+                    <% if (i%5 == 0) { %>
+                        <div class="w-100"></div>
+                    <% } %>
+                    <%i++;%>
+                <% }) %>
+                <% if (totalPages > 1) { %>
+                    <a class="btn btn-primary" href="/discover/tv/page=1" role="button">First</a>
+                    <a class="btn btn-primary" href="/discover/tv/page=1" role="button">1</a>
+                    <a class="btn btn-primary" href="/discover/tv/page=2" role="button">2</a>
+                    <a class="btn btn-primary" href="/discover/tv/page=3" role="button">3</a>
+                    <a class="btn btn-primary" href="/discover/tv/page=4" role="button">4</a>
+                    <a class="btn btn-primary" href="/discover/tv/page=<%=totalPages%>" role="button">last</a>
+                <% } %>
+            </div>
         <% } %>
     </div>
 <%- include('./../partials/footer')%>

@@ -21,60 +21,120 @@
         </ul>
     </nav>
     <div class="container">
-        <div class="row">
-            <div class="col-md-2">
-                <img src="https://image.tmdb.org/t/p/w185/<%=mediaInfo.poster_path%>" alt="<%=mediaInfo.title%>">
-            </div>
-            <div class="col-md-9">
-                <div class="c-video">
-                    <video class="video" src="/assets/videos/Placeholder Video.mp4" ></video>
+        <%if (isMovie === true) { %>
+            <div class="row">
+                <div class="col-md-2">
+                    <img src="https://image.tmdb.org/t/p/w185/<%=mediaInfo.poster_path%>" alt="<%=mediaInfo.title%>">
                 </div>
-                <div class="row">
-                    <div class="col-md-2">
-                        <strong>Title</strong>
+                <div class="col-md-9">
+                    <div class="c-video">
+                        <video class="video" src="/assets/videos/Placeholder Video.mp4" controls></video>
                     </div>
-                    <div class="col-md-10">
-                        <p><%=mediaInfo.title%></p>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <strong>Title</strong>
+                        </div>
+                        <div class="col-md-10">
+                            <p><%=mediaInfo.title%></p>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-2">
-                        <strong>Overview</strong>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <strong>Overview</strong>
+                        </div>
+                        <div class="col-md-10">
+                            <p><%=mediaInfo.overview%></p>
+                        </div>
                     </div>
-                    <div class="col-md-10">
-                        <p><%=mediaInfo.overview%></p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-2">
-                        <strong>genre</strong>
-                    </div>
-                    <div class="col-md-10">
-                        <p>
-                            <% var index = 1;%>
-                            <% mediaInfo.genre_ids.forEach( (genId) => { %>
-                                <% genresName.forEach( (genName) => { %>
-                                    <% if (genId == genName.id ) { %>
-                                        <%=genName.name%>
-                                        <% if (genId && index != mediaInfo.genre_ids.length) { %>
-                                            ,
+                    <div class="row">
+                        <div class="col-md-2">
+                            <strong>genre</strong>
+                        </div>
+                        <div class="col-md-10">
+                            <p>
+                                <% var index = 1;%>
+                                <% mediaInfo.genre_ids.forEach( (genId) => { %>
+                                    <% genresName.forEach( (genName) => { %>
+                                        <% if (genId == genName.id ) { %>
+                                            <%=genName.name%>
+                                            <% if (genId && index != mediaInfo.genre_ids.length) { %>
+                                                ,
+                                            <% } %>
+                                            <%index++;%>
                                         <% } %>
-                                        <%index++;%>
-                                    <% } %>
+                                    <% }) %>
                                 <% }) %>
-                            <% }) %>
-                        </p>
+                            </p>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-2">
-                        <strong>Rating <i class="fa fa-star fa-2x" style="color:gold" aria-hidden="true"></i></strong>
-                    </div>
-                    <div class="col-md-10">
-                        <p><%=mediaInfo.vote_average%>/10<br><small id="releaseDate" class="text-muted"><%=mediaInfo.vote_count%></small></p>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <strong>Rating <i class="fa fa-star fa-2x" style="color:gold" aria-hidden="true"></i></strong>
+                        </div>
+                        <div class="col-md-10">
+                            <p><%=mediaInfo.vote_average%>/10<br><small id="releaseDate" class="text-muted"><%=mediaInfo.vote_count%></small></p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        <% } else { %>
+            <div class="row">
+                <div class="col-md-2">
+                    <img src="https://image.tmdb.org/t/p/w185/<%=mediaInfo.poster_path%>" alt="<%=mediaInfo.name%>">
+                </div>
+                <div class="col-md-9">
+                    <div class="c-video">
+                        <video class="video" src="/assets/videos/Placeholder Video.mp4" controls></video>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <strong>Title</strong>
+                        </div>
+                        <div class="col-md-10">
+                            <p><%=mediaInfo.name%>hi</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <strong>Overview</strong>
+                        </div>
+                        <div class="col-md-10">
+                            <p><%=mediaInfo.overview%></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <strong>genre</strong>
+                        </div>
+                        <div class="col-md-10">
+                            <p>
+                                <% var index = 1;%>
+                                <% mediaInfo.genre_ids.forEach( (genId) => { %>
+                                    <% genresName.forEach( (genName) => { %>
+                                        <% if (genId == genName.id ) { %>
+                                            <%=genName.name%>
+                                            <% if (genId && index != mediaInfo.genre_ids.length) { %>
+                                                ,
+                                            <% } %>
+                                            <%index++;%>
+                                        <% } %>
+                                    <% }) %>
+                                <% }) %>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <strong>Rating <i class="fa fa-star fa-2x" style="color:gold" aria-hidden="true"></i></strong>
+                        </div>
+                        <div class="col-md-10">
+                            <p><%=mediaInfo.vote_average%>/10<br><small id="releaseDate" class="text-muted"><%=mediaInfo.vote_count%></small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% } %>
     </div>
 <%- include('./../partials/footer')%>

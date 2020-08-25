@@ -3,12 +3,40 @@ const router = express.Router();
 const {redirectLogin, redirectDashboard} = require('./accessControls');
 const dotenv = require('dotenv');
 const fetch = require('node-fetch');
+const { movieGenres, tvGenres } = require('../genreId');
 
 dotenv.config();
 
 const apiKey = process.env.TMDB_API_KEY
 
 router.get('/:pageNo/:id', redirectLogin, (req, res) => {
+    let user = req.session;
+    let pageNo = req.params.pageNo;
+
+    let popularUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=popularity.desc&language=en-US&include_adult=false&include_video=false&page=${pageNo}`;
+    let latestUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&certification_country=US&include_adult=false&include_video=false&page=${pageNo}&primary_release_year=2020`
+
+    fetch(popularUrl)
+        .then(response => response.json())
+        .then(dat => {
+            var genres = movieGenres;
+            dat.results.forEach((item, index, array) => {
+                if (item.id == req.params.id) {
+                    res.render('pages/title',{
+                        title: item.name,
+                        data: user,
+                        // popular: dat.results
+                        mediaInfo: item,
+                        genresName: genres,
+                        isMovie: true
+                    })
+                    // return 0;
+                }
+            });
+        })
+});
+
+router.get('/movies/:pageNo/:id', redirectLogin, (req, res) => {
     let user = req.session;
     let pageNo = req.params.pageNo;
     
@@ -18,84 +46,7 @@ router.get('/:pageNo/:id', redirectLogin, (req, res) => {
     fetch(popularUrl)
         .then(response => response.json())
         .then(dat => {
-            var genres = [
-                {
-                  "id": 28,
-                  "name": "Action"
-                },
-                {
-                  "id": 12,
-                  "name": "Adventure"
-                },
-                {
-                  "id": 16,
-                  "name": "Animation"
-                },
-                {
-                  "id": 35,
-                  "name": "Comedy"
-                },
-                {
-                  "id": 80,
-                  "name": "Crime"
-                },
-                {
-                  "id": 99,
-                  "name": "Documentary"
-                },
-                {
-                  "id": 18,
-                  "name": "Drama"
-                },
-                {
-                  "id": 10751,
-                  "name": "Family"
-                },
-                {
-                  "id": 14,
-                  "name": "Fantasy"
-                },
-                {
-                  "id": 36,
-                  "name": "History"
-                },
-                {
-                  "id": 27,
-                  "name": "Horror"
-                },
-                {
-                  "id": 10402,
-                  "name": "Music"
-                },
-                {
-                  "id": 9648,
-                  "name": "Mystery"
-                },
-                {
-                  "id": 10749,
-                  "name": "Romance"
-                },
-                {
-                  "id": 878,
-                  "name": "Science Fiction"
-                },
-                {
-                  "id": 10770,
-                  "name": "TV Movie"
-                },
-                {
-                  "id": 53,
-                  "name": "Thriller"
-                },
-                {
-                  "id": 10752,
-                  "name": "War"
-                },
-                {
-                  "id": 37,
-                  "name": "Western"
-                }
-              ]
+            var genres = movieGenres;
             dat.results.forEach((item, index, array) => {
                 if (item.id == req.params.id) {
                     res.render('pages/title',{
@@ -103,7 +54,35 @@ router.get('/:pageNo/:id', redirectLogin, (req, res) => {
                         data: user,
                         // popular: dat.results
                         mediaInfo: item,
-                        genresName: genres
+                        genresName: genres,
+                        isMovie: true
+                    })
+                    // return 0;
+                }
+            });
+        })
+});
+
+router.get('/tv/:pageNo/:id', redirectLogin, (req, res) => {
+    let user = req.session;
+    let pageNo = req.params.pageNo;
+    
+    let popularUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&sort_by=popularity.desc&language=en-US&include_adult=false&include_video=false&page=${pageNo}`;
+    let latestUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&certification_country=US&include_adult=false&include_video=false&page=${pageNo}&primary_release_year=2020`
+
+    fetch(popularUrl)
+        .then(response => response.json())
+        .then(dat => {
+            var genres = tvGenres;
+            dat.results.forEach((item, index, array) => {
+                if (item.id == req.params.id) {
+                    res.render('pages/title',{
+                        title: item.title,
+                        data: user,
+                        // popular: dat.results
+                        mediaInfo: item,
+                        genresName: genres,
+                        isMovie: true
                     })
                     // return 0;
                 }
