@@ -37,7 +37,29 @@ router.get('/', redirectLogin, (req, res) => {
             res.render('pages/discover',{
                 title: 'Entry',
                 data: user,
-                popular: dat.results
+                popular: dat.results,
+                pageNo: dat.page,
+                totalPages: dat.total_pages
+            })
+        })
+});
+
+router.get('/:pageNo', redirectLogin, (req, res) => {
+    let user = req.session;
+    let page = req.params.pageNo.split('page=');
+    let no = page[1];
+    let popularUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=popularity.desc&language=en-US&include_adult=false&include_video=false&page=${no}`;
+    let latestUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&certification_country=US&include_adult=false&include_video=false&page=${no}&primary_release_year=2020`
+    
+    fetch(popularUrl)
+        .then(response => response.json())
+        .then(dat => {
+            res.render('pages/discover',{
+                title: 'Entry',
+                data: user,
+                popular: dat.results,
+                pageNo: dat.page,
+                totalPages: dat.total_pages
             })
         })
 });
