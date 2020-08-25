@@ -31,6 +31,9 @@ router.get('/', redirectLogin, (req, res) => {
     fetch(popularUrl)
         .then(response => response.json())
         .then(dat => {
+            // console.log(dat.results[0].release_date);
+            // var mydate = new Date(dat.results[0].release_date);
+            // console.log(mydate.toDateString());
             res.render('pages/discover',{
                 title: 'Entry',
                 data: user,
