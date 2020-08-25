@@ -76,13 +76,14 @@ router.get('/tv/:pageNo/:id', redirectLogin, (req, res) => {
             var genres = tvGenres;
             dat.results.forEach((item, index, array) => {
                 if (item.id == req.params.id) {
+                    console.log(item);
                     res.render('pages/title',{
                         title: item.title,
                         data: user,
                         // popular: dat.results
                         mediaInfo: item,
                         genresName: genres,
-                        isMovie: true
+                        isMovie: false
                     })
                     // return 0;
                 }

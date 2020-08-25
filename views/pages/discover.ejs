@@ -50,21 +50,21 @@
                     <%i++;%>
                 <% }) %>
                 <% if (totalPages > 1) { %>
-                    <%//if (discMovie == false) { %>
+                    <% if (discMovie === false) { %>
                         <a class="btn btn-primary" href="/discover/page=1" role="button">First</a>
                         <a class="btn btn-primary" href="/discover/page=1" role="button">1</a>
                         <a class="btn btn-primary" href="/discover/page=2" role="button">2</a>
                         <a class="btn btn-primary" href="/discover/page=3" role="button">3</a>
                         <a class="btn btn-primary" href="/discover/page=4" role="button">4</a>
                         <a class="btn btn-primary" href="/discover/page=<%=totalPages%>" role="button">last</a>
-                    <%// } else { %>
+                    <% } else { %>
                         <a class="btn btn-primary" href="/discover/movies/page=1" role="button">First</a>
                         <a class="btn btn-primary" href="/discover/movies/page=1" role="button">1</a>
                         <a class="btn btn-primary" href="/discover/movies/page=2" role="button">2</a>
                         <a class="btn btn-primary" href="/discover/movies/page=3" role="button">3</a>
                         <a class="btn btn-primary" href="/discover/movies/page=4" role="button">4</a>
                         <a class="btn btn-primary" href="/discover/movies/page=<%=totalPages%>" role="button">last</a>
-                    <%// } %>
+                    <% } %>
                 <% } %>
             </div>
         <% } else if (popular !== undefined && isMovie === false) {%>

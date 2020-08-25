@@ -21,6 +21,7 @@ router.get('/', redirectLogin, (req, res) => {
                 data: user,
                 popular: dat.results,
                 isMovie: true,
+                discMovie: false,
                 pageNo: dat.page,
                 totalPages: dat.total_pages
             })
@@ -40,6 +41,7 @@ router.get('/movies', redirectLogin, (req, res) => {
                 data: user,
                 popular: dat.results,
                 isMovie: true,
+                discMovie: true,
                 pageNo: dat.page,
                 totalPages: dat.total_pages
             })
@@ -72,7 +74,7 @@ router.get('/:pageNo', redirectLogin, (req, res) => {
     let no = page[1];
     let popularUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=popularity.desc&language=en-US&include_adult=false&include_video=false&page=${no}`;
     let latestUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&certification_country=US&include_adult=false&include_video=false&page=${no}&primary_release_year=2020`
-    
+
     fetch(popularUrl)
         .then(response => response.json())
         .then(dat => {
