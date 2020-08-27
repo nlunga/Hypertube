@@ -30,6 +30,7 @@ const profile = require('./routes/profile');
 const profilePic = require('./routes/profilePic');
 const settings = require('./routes/settings');
 const viewMore = require('./routes/viewMore');
+const searchEngine = require('./routes/seachEngine');
 const logout = require('./routes/logout');
 const { proppatch } = require('./routes/login');
 
@@ -80,6 +81,7 @@ app.use('/profile', profile);
 app.use('/set-profilePic', profilePic);
 app.use('/settings', settings);
 app.use('/title', viewMore);
+app.use('/search', searchEngine);
 app.use('/logout', logout);
 
 http.listen(port, () => console.log(`Server running on port ${port}!`));

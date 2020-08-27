@@ -59,7 +59,7 @@
             <div class="row">
                 <% popular.forEach((popularMovies) => { %>                
                     <div class="col-lg-2">
-                        <a href="/title/<%=pageNo%>/<%=popularMovies.id%>">
+                        <a href="/title/s/movies/<%=searchFor%>/<%=pageNo%>/<%=popularMovies.id%>">
                             <!-- <div class="col-lg-20">
                                 <p class="mt-5 mt-lg-3"><%///=popularMovies.title%></p>
                             </div> -->
@@ -73,28 +73,19 @@
                     <%i++;%>
                 <% }) %>
                 <% if (totalPages > 1) { %>
-                    <% if (discMovie === false) { %>
-                        <a class="btn btn-primary" href="/discover/page=1" role="button">First</a>
-                        <a class="btn btn-primary" href="/discover/page=1" role="button">1</a>
-                        <a class="btn btn-primary" href="/discover/page=2" role="button">2</a>
-                        <a class="btn btn-primary" href="/discover/page=3" role="button">3</a>
-                        <a class="btn btn-primary" href="/discover/page=4" role="button">4</a>
-                        <a class="btn btn-primary" href="/discover/page=<%=totalPages%>" role="button">last</a>
-                    <% } else { %>
-                        <a class="btn btn-primary" href="/discover/movies/page=1" role="button">First</a>
-                        <a class="btn btn-primary" href="/discover/movies/page=1" role="button">1</a>
-                        <a class="btn btn-primary" href="/discover/movies/page=2" role="button">2</a>
-                        <a class="btn btn-primary" href="/discover/movies/page=3" role="button">3</a>
-                        <a class="btn btn-primary" href="/discover/movies/page=4" role="button">4</a>
-                        <a class="btn btn-primary" href="/discover/movies/page=<%=totalPages%>" role="button">last</a>
-                    <% } %>
+                    <a class="btn btn-primary" href="/search/movies/<%=searchFor%>/page=1" role="button">First</a>
+                    <a class="btn btn-primary" href="/search/movies/<%=searchFor%>/page=2" role="button">2</a>
+                    <a class="btn btn-primary" href="/search/movies/<%=searchFor%>/page=3" role="button">3</a>
+                    <a class="btn btn-primary" href="/search/movies/<%=searchFor%>/page=4" role="button">4</a>
+                    <a class="btn btn-primary" href="/search/movies/<%=searchFor%>/page=5" role="button">5</a>
+                    <a class="btn btn-primary" href="/search/movies/<%=searchFor%>/page=<%=totalPages%>" role="button">last</a>
                 <% } %>
             </div>
         <% } else if (popular !== undefined && isMovie === false) {%>
             <div class="row">
                 <% popular.forEach((popularMovies) => { %>                
                     <div class="col-lg-2">
-                        <a href="/title/tv/<%=pageNo%>/<%=popularMovies.id%>">
+                        <a href="/title/s/tv/<%=searchFor%>/<%=pageNo%>/<%=popularMovies.id%>">
                             <!-- <div class="col-lg-20">
                                 <p class="mt-5 mt-lg-3"><%///=popularMovies.title%></p>
                             </div> -->
@@ -108,12 +99,12 @@
                     <%i++;%>
                 <% }) %>
                 <% if (totalPages > 1) { %>
-                    <a class="btn btn-primary" href="/discover/tv/page=1" role="button">First</a>
-                    <a class="btn btn-primary" href="/discover/tv/page=1" role="button">1</a>
-                    <a class="btn btn-primary" href="/discover/tv/page=2" role="button">2</a>
-                    <a class="btn btn-primary" href="/discover/tv/page=3" role="button">3</a>
-                    <a class="btn btn-primary" href="/discover/tv/page=4" role="button">4</a>
-                    <a class="btn btn-primary" href="/discover/tv/page=<%=totalPages%>" role="button">last</a>
+                        <a class="btn btn-primary" href="/search/tv/<%=searchFor%>/page=1" role="button">First</a>
+                        <a class="btn btn-primary" href="/search/tv/<%=searchFor%>/page=2" role="button">2</a>
+                        <a class="btn btn-primary" href="/search/tv/<%=searchFor%>/page=3" role="button">3</a>
+                        <a class="btn btn-primary" href="/search/tv/<%=searchFor%>/page=4" role="button">4</a>
+                        <a class="btn btn-primary" href="/search/tv/<%=searchFor%>/page=5" role="button">5</a>
+                        <a class="btn btn-primary" href="/search/tv/<%=searchFor%>/page=<%=totalPages%>" role="button">last</a>
                 <% } %>
             </div>
         <% } %>
