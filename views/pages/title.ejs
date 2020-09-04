@@ -21,10 +21,39 @@
         </ul>
     </nav>
     <div class="container">
-        <%if (isMovie === true) { %>
+        <%if (isSeason === true) { %>
             <div class="row">
                 <div class="col-md-2">
-                    <img src="https://image.tmdb.org/t/p/w185/<%=mediaInfo.poster_path%>" alt="<%=mediaInfo.title%>">
+                    <img src="https://image.tmdb.org/t/p/w185/<%=mediaInfo.poster_path%>" class="mb-5" alt="<%=mediaInfo.name%>"><hr>
+                    <% for (let index = 1; index <= mediaInfo.number_of_seasons; index++) { %>
+                        <div class="row">
+                            <div class="col-md-12 mb-2">
+                                <div id="accordion">
+                                    <div class="card">
+                                    <div class="card-header" id="headingOne">
+                                        <h5 class="mb-0">
+                                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne<%=index%>" aria-expanded="false" aria-controls="collapseOne<%=index%>">
+                                            Season <%=index%>
+                                        </button>
+                                        </h5>
+                                    </div>
+                                    
+                                    <div id="collapseOne<%=index%>" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                        <div class="card-body">
+                                            <% mediaInfo.seasons.forEach((data) => { %>
+                                                <% if (data.season_number == index) { %>
+                                                    <% for (let i = 1; i <= data.episode_count; i++) { %>
+                                                        <a href="/title/tv/1/<%=mediaInfo.id%>/season=<%=index%>/episode=<%=i%>" >Episode <%=i%></a><hr><br>
+                                                    <% } %>
+                                                <% } %>
+                                            <% }) %>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>    
+                    <% } %>
                 </div>
                 <div class="col-md-9">
                     <div class="c-video">
@@ -32,11 +61,33 @@
                     </div>
                     <hr>
                     <div class="row">
+                        <div class="col-md-2 mx-auto">
+                            <a href="/download/<%=mediaInfo.name%> <%=seaEpi%>/<%=titleRoute%>"><i class="fa fa-download" aria-hidden="true">Download</i></a>
+                        </div>
+                     </div>
+                    <hr>
+                    <div class="row">
                         <div class="col-md-2">
                             <strong>Title</strong>
                         </div>
                         <div class="col-md-10">
-                            <p><%=mediaInfo.title%></p>
+                            <p><%=mediaInfo.name%></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <strong>Season</strong>
+                        </div>
+                        <div class="col-md-10">
+                            <p><%=seasonData%></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <strong>Episode</strong>
+                        </div>
+                        <div class="col-md-10">
+                            <p><%=episodeData%></p>
                         </div>
                     </div>
                     <div class="row">
@@ -54,16 +105,12 @@
                         <div class="col-md-10">
                             <p>
                                 <% var index = 1;%>
-                                <% mediaInfo.genre_ids.forEach( (genId) => { %>
-                                    <% genresName.forEach( (genName) => { %>
-                                        <% if (genId == genName.id ) { %>
-                                            <%=genName.name%>
-                                            <% if (genId && index != mediaInfo.genre_ids.length) { %>
-                                                ,
-                                            <% } %>
-                                            <%index++;%>
-                                        <% } %>
-                                    <% }) %>
+                                <% mediaInfo.genres.forEach( (genId) => { %>
+                                    <%=genId.name%>
+                                    <% if (genId && index != mediaInfo.genres.length) { %>
+                                        ,
+                                    <% } %>
+                                    <%index++;%>
                                 <% }) %>
                             </p>
                         </div>
@@ -79,62 +126,165 @@
                 </div>
             </div>
         <% } else { %>
-            <div class="row">
-                <div class="col-md-2">
-                    <img src="https://image.tmdb.org/t/p/w185/<%=mediaInfo.poster_path%>" alt="<%=mediaInfo.name%>">
-                </div>
-                <div class="col-md-9">
-                    <div class="c-video">
-                        <video class="video" src="/assets/videos/Placeholder Video.mp4" controls></video>
-                    </div>
-                    <hr>
+                <%if (isMovie === true) { %>
                     <div class="row">
                         <div class="col-md-2">
-                            <strong>Title</strong>
+                            <img src="https://image.tmdb.org/t/p/w185/<%=mediaInfo.poster_path%>" alt="<%=mediaInfo.title%>">
                         </div>
-                        <div class="col-md-10">
-                            <p><%=mediaInfo.name%></p>
+                        <div class="col-md-9">
+                            <div class="c-video">
+                                <video class="video" src="/assets/videos/Placeholder Video.mp4" controls></video>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-2 mx-auto">
+                                    <a href="/download/<%=mediaInfo.title%>/<%=titleRoute%>"><i class="fa fa-download" aria-hidden="true">Download</i></a>
+                                </div>
+                             </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <strong>Title</strong>
+                                </div>
+                                <div class="col-md-10">
+                                    <p><%=mediaInfo.title%></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <strong>Overview</strong>
+                                </div>
+                                <div class="col-md-10">
+                                    <p><%=mediaInfo.overview%></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <strong>genre</strong>
+                                </div>
+                                <div class="col-md-10">
+                                    <p>
+                                        <% var index = 1;%>
+                                        <% mediaInfo.genre_ids.forEach( (genId) => { %>
+                                            <% genresName.forEach( (genName) => { %>
+                                                <% if (genId == genName.id ) { %>
+                                                    <%=genName.name%>
+                                                    <% if (genId && index != mediaInfo.genre_ids.length) { %>
+                                                        ,
+                                                    <% } %>
+                                                    <%index++;%>
+                                                <% } %>
+                                            <% }) %>
+                                        <% }) %>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <strong>Rating <i class="fa fa-star fa-2x" style="color:gold" aria-hidden="true"></i></strong>
+                                </div>
+                                <div class="col-md-10">
+                                    <p><%=mediaInfo.vote_average%>/10<br><small id="releaseDate" class="text-muted"><%=mediaInfo.vote_count%></small></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                <% } else { %>
                     <div class="row">
                         <div class="col-md-2">
-                            <strong>Overview</strong>
+                            <img src="https://image.tmdb.org/t/p/w185/<%=mediaInfo.poster_path%>" class="mb-5" alt="<%=mediaInfo.name%>"><hr>
+                            <% for (let index = 1; index <= mediaInfo.number_of_seasons; index++) { %>
+                                <div class="row">
+                                    <div class="col-md-12 mb-2">
+                                        <div id="accordion">
+                                            <div class="card">
+                                            <div class="card-header" id="headingOne">
+                                                <h5 class="mb-0">
+                                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne<%=index%>" aria-expanded="false" aria-controls="collapseOne<%=index%>">
+                                                    Season <%=index%>
+                                                </button>
+                                                </h5>
+                                            </div>
+                                            
+                                            <div id="collapseOne<%=index%>" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                                <div class="card-body">
+                                                    <% mediaInfo.seasons.forEach((data) => { %>
+                                                        <% if (data.season_number == index) { %>
+                                                            <% for (let i = 1; i <= data.episode_count; i++) { %>
+                                                                <a href="/title/tv/1/<%=mediaInfo.id%>/season=<%=index%>/episode=<%=i%>" >Episode <%=i%></a><hr><br>
+                                                            <% } %>
+                                                        <% } %>
+                                                    <% }) %>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                </div>    
+                            <% } %>
                         </div>
-                        <div class="col-md-10">
-                            <p><%=mediaInfo.overview%></p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <strong>genre</strong>
-                        </div>
-                        <div class="col-md-10">
-                            <p>
-                                <% var index = 1;%>
-                                <% mediaInfo.genre_ids.forEach( (genId) => { %>
-                                    <% genresName.forEach( (genName) => { %>
-                                        <% if (genId == genName.id ) { %>
-                                            <%=genName.name%>
-                                            <% if (genId && index != mediaInfo.genre_ids.length) { %>
-                                                ,
-                                            <% } %>
-                                            <%index++;%>
-                                        <% } %>
-                                    <% }) %>
+                        <div class="col-md-9">
+                            <div class="c-video">
+                                <video class="video" src="/assets/videos/Placeholder Video.mp4" controls></video>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <strong>Title</strong>
+                                </div>
+                                <div class="col-md-10">
+                                    <p><%=mediaInfo.name%></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <strong>Overview</strong>
+                                </div>
+                                <div class="col-md-10">
+                                    <p><%=mediaInfo.overview%></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <strong>genre</strong>
+                                </div>
+                                <div class="col-md-10">
+                                    <p>
+                                        <!-- <%// var index = 1;%>
+                                        <%// mediaInfo.genre_ids.forEach( (genId) => { %>
+                                            <%// genresName.forEach( (genName) => { %>
+                                                <%// if (genId == genName.id ) { %>
+                                                    <%//=genName.name%>
+                                                    <%// if (genId && index != mediaInfo.genre_ids.length) { %>
+                                                        ,
+                                                    <%// } %>
+                                                    <%//index++;%>
+                                                <%// } %>
+                                            <%// }) %>
+                                        <%// }) %> -->
+                                    <% var index = 1;%>
+                                <% mediaInfo.genres.forEach( (genId) => { %>
+                                    <%=genId.name%>
+                                    <% if (genId && index != mediaInfo.genres.length) { %>
+                                        ,
+                                    <% } %>
+                                    <%index++;%>
                                 <% }) %>
-                            </p>
+                                        
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <strong>Rating <i class="fa fa-star fa-2x" style="color:gold" aria-hidden="true"></i></strong>
+                                </div>
+                                <div class="col-md-10">
+                                    <p><%=mediaInfo.vote_average%>/10<br><small id="releaseDate" class="text-muted"><%=mediaInfo.vote_count%></small></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <strong>Rating <i class="fa fa-star fa-2x" style="color:gold" aria-hidden="true"></i></strong>
-                        </div>
-                        <div class="col-md-10">
-                            <p><%=mediaInfo.vote_average%>/10<br><small id="releaseDate" class="text-muted"><%=mediaInfo.vote_count%></small></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                <% } %>
         <% } %>
     </div>
 <%- include('./../partials/footer')%>

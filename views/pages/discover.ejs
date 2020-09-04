@@ -43,17 +43,68 @@
                       <a class="dropdown-item" href="/discover/movies">movies</a>
                       <a class="dropdown-item" href="/discover/tv">tv series</a>
                     </div>
-                  </div>
+                </div>
                 <li class="nav-item">
-                <a class="nav-link" href="/logout">Logout</a>
+                    <div class="ml-5 ml-lg-4 dropdown show">
+                        <a class="dropdown-toggle" href="#" role="link" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-2x mt-1 fa-cog" aria-hidden="true"></i>
+                        </a>
+                      
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                          <a class="dropdown-item" href="/profile">view profile</a>
+                          <a class="dropdown-item" href="/settings">edit settings</a>
+                        </div>
+                    </div>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link" href="/profile">Profile</a>
-                </li>
+                    <a class="nav-link" href="/logout">Logout</a>
+                    </li>
             <% } %>
         </ul>
     </nav>
     <div class="container">
+        <% if (isMovie === true) { %>
+            <div class="sort-test">
+                <h4>Sort</h4><hr>
+                <form action="/sort/movie" method="post">
+                    <div class="form-group col-md-12">
+                        <label for="inputState">Sort Results By</label>
+                        <select id="inputState" name="sortResults" class="form-control">
+                          <option value="popularity.desc" <%=(sortTag === "popularity.desc" ? "selected" : "")%> >Popularity Descending</option>
+                          <option value="popularity.asc" <%=(sortTag === "popularity.asc" ? "selected" : "")%> >Popularity Ascending</option>
+                          <option value="vote_average.desc" <%=(sortTag === "vote_average.desc" ? "selected" : "")%> >Rating Descending</option>
+                          <option value="vote_average.asc" <%=(sortTag === "vote_average.asc" ? "selected" : "")%> >Rating Ascending</option>
+                          <option value="primary_release_date.desc" <%=(sortTag === "primary_release_date.desc" ? "selected" : "")%> >Release Date Descending</option>
+                          <option value="primary_release_date.asc" <%=(sortTag === "primary_release_date.asc" ? "selected" : "")%> >Release Date Ascending</option>
+                          <option value="original_title.asc" <%=(sortTag === "original_title.asc" ? "selected" : "")%> >Title (A-Z)</option>
+                          <option value="original_title.desc" <%=(sortTag === "original_title.desc" ? "selected" : "")%> >Title (Z-A)</option>
+                        </select>
+                      </div>
+                      <button type="submit" class="sort-btn btn btn-primary">Sort</button>
+                </form>
+            </div>
+        <% } else { %>
+            <div class="sort-test">
+                <h4>Sort</h4><hr>
+                <form action="/sort/tv" method="post">
+                    <div class="form-group col-md-12">
+                        <label for="inputState">Sort Results By</label>
+                        <select id="inputState" class="form-control">
+                          <option selected>Popularity Descending</option>
+                          <option>Popularity Ascending</option>
+                          <option>Rating Descending</option>
+                          <option>Rating Ascending</option>
+                          <option>Release Date Descending</option>
+                          <option>Release Date Ascending</option>
+                          <option>Title (A-Z)</option>
+                          <option>Title (Z-A)</option>
+                        </select>
+                      </div>
+                      <button type="submit" class="sort-btn btn btn-primary">Sort</button>
+                </form>
+            </div>
+        <% } %>
+        <!-- <div class="position-absolute sticky-top sort-test">dkhdkhh</div> -->
         <% if (popular !== undefined && isMovie === true) { %>
             <%var i = 1; %>
             <div class="row">
@@ -72,25 +123,37 @@
                     <% } %>
                     <%i++;%>
                 <% }) %>
-                <% if (totalPages > 1) { %>
-                    <% if (discMovie === false) { %>
-                        <a class="btn btn-primary" href="/discover/page=1" role="button">First</a>
-                        <a class="btn btn-primary" href="/discover/page=1" role="button">1</a>
-                        <a class="btn btn-primary" href="/discover/page=2" role="button">2</a>
-                        <a class="btn btn-primary" href="/discover/page=3" role="button">3</a>
-                        <a class="btn btn-primary" href="/discover/page=4" role="button">4</a>
-                        <a class="btn btn-primary" href="/discover/page=<%=totalPages%>" role="button">last</a>
-                    <% } else { %>
-                        <a class="btn btn-primary" href="/discover/movies/page=1" role="button">First</a>
-                        <a class="btn btn-primary" href="/discover/movies/page=1" role="button">1</a>
-                        <a class="btn btn-primary" href="/discover/movies/page=2" role="button">2</a>
-                        <a class="btn btn-primary" href="/discover/movies/page=3" role="button">3</a>
-                        <a class="btn btn-primary" href="/discover/movies/page=4" role="button">4</a>
-                        <a class="btn btn-primary" href="/discover/movies/page=<%=totalPages%>" role="button">last</a>
-                    <% } %>
-                <% } %>
             </div>
+            <% if (totalPages > 1) { %>
+                <% if (discMovie === false) { %>
+                    <a class="btn btn-primary" href="/discover/page=1" role="button">First</a>
+                    <a class="btn btn-primary" href="/discover/page=1" role="button">1</a>
+                    <a class="btn btn-primary" href="/discover/page=2" role="button">2</a>
+                    <a class="btn btn-primary" href="/discover/page=3" role="button">3</a>
+                    <a class="btn btn-primary" href="/discover/page=4" role="button">4</a>
+                    <a class="btn btn-primary" href="/discover/page=<%=totalPages%>" role="button">last</a>
+                    <!-- <%// if (pageNo > 1) { %>
+                        <a class="btn btn-primary" href="/discover/page=<%=(pageNo - 1)%>" role="button">previous</a>
+                    <%// } %>
+                    <%// while (pageNo <= totalPages) { %>
+                        <a class="btn btn-primary" href="/discover/page=<%=pageNo%>" role="button"><%=pageNo%></a>
+                        <//%pageNo++;%>
+                    <%// } %> -->
+                    <!-- <%// if (pageNo >= 1) { %>
+                        <a class="btn btn-primary" href="/discover/page=<%//=(pageNo + 1)%>" role="button">next</a>
+                    <%// } %> -->
+
+                <% } else { %>
+                    <a class="btn btn-primary" href="/discover/movies/page=1" role="button">First</a>
+                    <a class="btn btn-primary" href="/discover/movies/page=1" role="button">1</a>
+                    <a class="btn btn-primary" href="/discover/movies/page=2" role="button">2</a>
+                    <a class="btn btn-primary" href="/discover/movies/page=3" role="button">3</a>
+                    <a class="btn btn-primary" href="/discover/movies/page=4" role="button">4</a>
+                    <a class="btn btn-primary" href="/discover/movies/page=<%=totalPages%>" role="button">last</a>
+                <% } %>
+            <% } %>
         <% } else if (popular !== undefined && isMovie === false) {%>
+            <%var i = 1; %>
             <div class="row">
                 <% popular.forEach((popularMovies) => { %>                
                     <div class="col-lg-2">

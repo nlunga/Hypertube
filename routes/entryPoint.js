@@ -3,6 +3,7 @@ const router = express.Router();
 const {redirectLogin, redirectDashboard} = require('./accessControls');
 const dotenv = require('dotenv');
 const fetch = require('node-fetch');
+const { compareSync } = require('bcrypt');
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ router.get('/', redirectLogin, (req, res) => {
                 popular: dat.results,
                 isMovie: true,
                 discMovie: false,
+                sortTag: 'popularity.desc',
                 pageNo: dat.page,
                 totalPages: dat.total_pages
             })
@@ -42,6 +44,7 @@ router.get('/movies', redirectLogin, (req, res) => {
                 popular: dat.results,
                 isMovie: true,
                 discMovie: true,
+                sortTag: 'popularity.desc',
                 pageNo: dat.page,
                 totalPages: dat.total_pages
             })
@@ -56,12 +59,14 @@ router.get('/tv', redirectLogin, (req, res) => {
     fetch(popularUrl)
         .then(response => response.json())
         .then(dat => {
+            console.log(dat);
             // console.log(dat.results[0].name);
             res.render('pages/discover',{
                 title: 'Entry',
                 data: user,
                 popular: dat.results,
                 isMovie: false,
+                sortTag: 'popularity.desc',
                 pageNo: dat.page,
                 totalPages: dat.total_pages
             })
@@ -84,6 +89,7 @@ router.get('/:pageNo', redirectLogin, (req, res) => {
                 popular: dat.results,
                 isMovie: true,
                 discMovie: false,
+                sortTag: 'popularity.desc',
                 pageNo: dat.page,
                 totalPages: dat.total_pages
             })
@@ -106,6 +112,7 @@ router.get('/movies/:pageNo', redirectLogin, (req, res) => {
                 popular: dat.results,
                 isMovie: true,
                 discMovie: true,
+                sortTag: 'popularity.desc',
                 pageNo: dat.page,
                 totalPages: dat.total_pages
             })
@@ -127,6 +134,7 @@ router.get('/tv/:pageNo', redirectLogin, (req, res) => {
                 data: user,
                 popular: dat.results,
                 isMovie: false,
+                sortTag: 'popularity.desc',
                 pageNo: dat.page,
                 totalPages: dat.total_pages
             })

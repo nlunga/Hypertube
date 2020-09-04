@@ -30,3 +30,20 @@
     color: #aaa;
     font-style: italic;
 }
+
+
+.sort-test {
+    background-color: aliceblue;
+    width: 100%;
+    max-width: 250px;
+    position: absolute;
+    left: 1080px;
+}
+
+.sort-btn {
+    position: relative;
+    left: 25%;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 110px;
+}
