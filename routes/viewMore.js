@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {redirectLogin, redirectDashboard} = require('./accessControls');
+const {conInit, con } = require('../config/connection');
 const dotenv = require('dotenv');
 const fetch = require('node-fetch');
 const { movieGenres, tvGenres } = require('../genreId');
@@ -23,15 +24,20 @@ router.get('/:pageNo/:id', redirectLogin, (req, res) => {
             var genres = movieGenres;
             dat.results.forEach((item, index, array) => {
                 if (item.id == req.params.id) {
-                    res.render('pages/title',{
-                        title: item.name,
-                        data: user,
-                        isSeason: false,
-                        mediaInfo: item,
-                        titleRoute: `pageNumber=${pageNo}&movieId=${req.params.id}`,
-                        genresName: genres,
-                        isMovie: true
-                    })
+                    con.query('SELECT * FROM comments', (err, results) => {
+                        if (err) throw err;
+                        // console.log(results);
+                        res.render('pages/title',{
+                            title: item.name,
+                            data: user,
+                            pastComments: results,
+                            isSeason: false,
+                            mediaInfo: item,
+                            titleRoute: `pageNumber=${pageNo}&movieId=${req.params.id}`,
+                            genresName: genres,
+                            isMovie: true
+                        });
+                    });
                     // return 0;
                 }
             });
@@ -51,14 +57,18 @@ router.get('/movies/:pageNo/:id', redirectLogin, (req, res) => {
             var genres = movieGenres;
             dat.results.forEach((item, index, array) => {
                 if (item.id == req.params.id) {
-                    res.render('pages/title',{
-                        title: item.title,
-                        data: user,
-                        isSeason: false,
-                        mediaInfo: item,
-                        genresName: genres,
-                        isMovie: true
-                    })
+                    con.query('SELECT * FROM comments', (err, results) => {
+                        if (err) throw err;
+                        res.render('pages/title',{
+                            title: item.title,
+                            data: user,
+                            pastComments: results,
+                            isSeason: false,
+                            mediaInfo: item,
+                            genresName: genres,
+                            isMovie: true
+                        });
+                    });
                     // return 0;
                 }
             });
@@ -76,16 +86,20 @@ router.get('/tv/:pageNo/:id', redirectLogin, (req, res) => {
     fetch(tvUrl)
         .then(response => response.json())
         .then(dat => {
-            console.log(dat);
+            // console.log(dat);
             var genres = tvGenres;
-            res.render('pages/title',{
-                title: dat.name,
-                data: user,
-                isSeason: false,
-                mediaInfo: dat,
-                titleRoute: `pageNumber=${pageNo}&movieId=${tvId}`,
-                genresName: genres,
-                isMovie: false
+            con.query('SELECT * FROM comments', (err, results) => {
+                if (err) throw err;
+                res.render('pages/title',{
+                    title: dat.name,
+                    data: user,
+                    pastComments: results,
+                    isSeason: false,
+                    mediaInfo: dat,
+                    titleRoute: `pageNumber=${pageNo}&movieId=${tvId}`,
+                    genresName: genres,
+                    isMovie: false
+                });
             });
         })
 });
@@ -116,17 +130,22 @@ router.get('/tv/:pageNo/:id/:season/:episode', (req, res) => {
         .then(dat => {
             // console.log(dat);
             var genres = tvGenres;
-            res.render('pages/title',{
-                title: dat.name,
-                data: user,
-                isSeason: true,
-                seasonData: seasonNo,
-                episodeData: episodeNo,
-                seaEpi: `${sea}${epi}`,
-                titleRoute: `pageNumber=${pageNo}&movieId=${tvId}`,
-                mediaInfo: dat,
-                genresName: genres,
-                isMovie: false
+            con.query('SELECT * FROM comments', (err, results) => {
+                if (err) throw err;
+                res.render('pages/title',{
+                    title: dat.name,
+                    data: user,
+                    pastComments: results,
+                    isSeason: true,
+                    seasonData: seasonNo,
+                    episodeData: episodeNo,
+                    seaEpi: `${sea}${epi}`,
+                    seaName:  `${dat.name} s${sea}e${epi}`,
+                    titleRoute: `pageNumber=${pageNo}&movieId=${tvId}`,
+                    mediaInfo: dat,
+                    genresName: genres,
+                    isMovie: false
+                });
             });
         })
 })
@@ -145,14 +164,18 @@ router.get('/s/:category/:queryString/:id', redirectLogin, (req, res) => {
                 var genres = tvGenres;
                 dat.results.forEach((item, index, array) => {
                     if (item.id == req.params.id) {
-                        res.render('pages/title',{
-                            title: item.title,
-                            data: user,
-                            isSeason: false,
-                            mediaInfo: item,
-                            genresName: genres,
-                            isMovie: true
-                        })
+                        con.query('SELECT * FROM comments', (err, results) => {
+                            if (err) throw err;
+                            res.render('pages/title',{
+                                title: item.title,
+                                data: user,
+                                pastComments: results,
+                                isSeason: false,
+                                mediaInfo: item,
+                                genresName: genres,
+                                isMovie: true
+                            });
+                        });
                     }
                 });
             })
@@ -163,13 +186,17 @@ router.get('/s/:category/:queryString/:id', redirectLogin, (req, res) => {
                 var genres = tvGenres;
                 dat.results.forEach((item, index, array) => {
                     if (item.id == req.params.id) {
-                        res.render('pages/title',{
-                            title: item.title,
-                            data: user,
-                            isSeason: false,
-                            mediaInfo: item,
-                            genresName: genres,
-                            isMovie: false
+                        con.query('SELECT * FROM comments', (err, results) => {
+                            if (err) throw err;
+                            res.render('pages/title',{
+                                title: item.title,
+                                data: user,
+                                pastComments: results,
+                                isSeason: false,
+                                mediaInfo: item,
+                                genresName: genres,
+                                isMovie: false
+                            });
                         });
                     }
                 });
@@ -193,14 +220,18 @@ router.get('/s/:category/:queryString/:pageNo/:id', redirectLogin, (req, res) =>
                 var genres = movieGenres;
                 dat.results.forEach((item, index, array) => {
                     if (item.id == req.params.id) {
-                        res.render('pages/title',{
-                            title: item.title,
-                            data: user,
-                            isSeason: false,
-                            mediaInfo: item,
-                            titleRoute: `pageNumber=${pageNo}&movieId=${req.params.id}`,
-                            genresName: genres,
-                            isMovie: true
+                        con.query('SELECT * FROM comments', (err, results) => {
+                            if (err) throw err;
+                            res.render('pages/title',{
+                                title: item.title,
+                                data: user,
+                                pastComments: results,
+                                isSeason: false,
+                                mediaInfo: item,
+                                titleRoute: `pageNumber=${pageNo}&movieId=${req.params.id}`,
+                                genresName: genres,
+                                isMovie: true
+                            });
                         });
                     }
                 });
@@ -210,7 +241,7 @@ router.get('/s/:category/:queryString/:pageNo/:id', redirectLogin, (req, res) =>
             .then(response => response.json())
             .then(dat => {
                 var genres = tvGenres;
-                console.log(dat);
+                // console.log(dat);
                 dat.results.forEach((item, index, array) => {
                     if (item.id == req.params.id) {
                         let tvUrl = `https://api.themoviedb.org/3/tv/${item.id}?api_key=${apiKey}&language=en-US`
@@ -218,17 +249,21 @@ router.get('/s/:category/:queryString/:pageNo/:id', redirectLogin, (req, res) =>
                         fetch(tvUrl)
                             .then(response => response.json())
                             .then(dat => {
-                                console.log(dat);
+                                // console.log(dat);
                                 var genres = tvGenres;
-                                res.render('pages/title',{
-                                    title: dat.name,
-                                    data: user,
-                                    isSeason: false,
-                                    pageData: pageNo,
-                                    mediaInfo: dat,
-                                    titleRoute: `pageNumber=${pageNo}&movieId=${req.params.id}`,
-                                    genresName: genres,
-                                    isMovie: false
+                                con.query('SELECT * FROM comments', (err, results) => {
+                                    if (err) throw err;
+                                    res.render('pages/title',{
+                                        title: dat.name,
+                                        data: user,
+                                        pastComments: results,
+                                        isSeason: false,
+                                        pageData: pageNo,
+                                        mediaInfo: dat,
+                                        titleRoute: `pageNumber=${pageNo}&movieId=${req.params.id}`,
+                                        genresName: genres,
+                                        isMovie: false
+                                    });
                                 });
                             });
                     }

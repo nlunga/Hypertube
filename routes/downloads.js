@@ -32,26 +32,28 @@ router.get('/:mediaName/:titleRoute',async (req, res) => {
     const torrentIndexer = new TorrentIndexer();
     
     const torrents = await torrentIndexer.search(req.params.mediaName);
-    const magnetLink = torrents[0].link;
-    const torrent = new Torrent(magnetLink, opts);
-        
-    //torrent.on('progress', console.log); // prints torrent.status()
-    //torrent.on('metadata', console.log);
-
-
+    // if (torrents.length !== 0) {
+        const magnetLink = torrents[0].link;
+        const torrent = new Torrent(magnetLink, opts);
             
-    torrent.on('stats', (stats) => {
-        console.log("Percentage: " + stats.percentage);
-        console.log("Download Speed: " + stats.downSpeed);
-        console.log("Upload Speed: " + stats.upSpeed);
-        console.log("Total Downloaded: " + (stats.downloaded/1024));
-        console.log("Uploaded: " + stats.uploaded);
-        console.log("Seeds/Peers: " + stats.peersTotal);
-        console.log("Peers Unchocked: " + stats.peersUnchoked);
-    });
-
-    torrent.on('complete', console.log); // prints torrent.metadata
-    res.redirect(`/title/${pageNo}/${splitId}`);
+        //torrent.on('progress', console.log); // prints torrent.status()
+        //torrent.on('metadata', console.log);
+                
+        torrent.on('stats', (stats) => {
+            console.log("Percentage: " + stats.percentage);
+            console.log("Download Speed: " + stats.downSpeed);
+            console.log("Upload Speed: " + stats.upSpeed);
+            console.log("Total Downloaded: " + (stats.downloaded/1024));
+            console.log("Uploaded: " + stats.uploaded);
+            console.log("Seeds/Peers: " + stats.peersTotal);
+            console.log("Peers Unchocked: " + stats.peersUnchoked);
+        });
+    
+        torrent.on('complete', console.log); // prints torrent.metadata
+        // res.redirect(`/title/${pageNo}/${splitId}`);
+    // } else {
+    //     console.log("check downloads.js for errors!")
+    // }
 
     /* const titleRoute = req.params.titleRoute;
     const urlLink = titleRoute.split('&');

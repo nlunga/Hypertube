@@ -20,11 +20,19 @@
             <% } %>
         </ul>
     </nav>
-
-    <div class="container  d-flex justify-content-center regTest">
-        <div class="alert alert-success  d-flex justify-content-center regAlertTest" role="alert">
-            <p>Thank You <%=data.firstname%> <%=data.lastname%> for joining, Please verify your email</p>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <img class="demoPic" src="/assets/images/demoPic.jpg" class="mb-5" alt="Demo"><hr>
+            </div>
+            <div class="col-md-9">
+                <div class="c-video">
+                    <video class="video" controls muted="muted" autoplay>
+                        <source src="http://localhost:8626/test/video" type="video/mp4">
+                    </video>
+                </div>
+                <hr>
+            </div>
         </div>
     </div>
-
 <%- include('./../partials/footer')%>

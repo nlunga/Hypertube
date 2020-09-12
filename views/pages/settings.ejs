@@ -1,5 +1,25 @@
 <%- include('./../partials/header')%>
 
+    <!-- <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="/index">Hypertube</a>
+        <ul class="nav justify-content-end">
+            <% //if (!data.userId) { %>
+                <li class="nav-item">
+                <a class="nav-link active" href="/login">Sign In</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="/signup">Sign Up</a>
+                </li>
+            <% //} else { %>
+                <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="/profile">Profile</a>
+                </li>
+            <% //} %>
+        </ul>
+    </nav> -->
     <nav class="navbar navbar-light bg-light">
         <a class="navbar-brand" href="/index">Hypertube</a>
         <ul class="nav justify-content-end">
@@ -11,12 +31,54 @@
                 <a class="nav-link" href="/signup">Sign Up</a>
                 </li>
             <% } else { %>
+                <% if (isMovie === true) { %>
+                    <form action="/search/movies" method="post">
+                        <div class="row mb-4">
+                            <div class="form-group col-md-9">
+                            <input id="movie" type="text" name="movie" placeholder="What movie are you searching for?" class="form-control form-control-underlined">
+                            </div>
+                            <div class="form-group col-md-3">
+                            <button type="submit" class="mr-5 mr-xl-5 btn btn-primary rounded-pill btn-block shadow-sm">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                <% } else { %>
+                    <form action="/search/tv" method="post">
+                        <div class="row mb-4">
+                            <div class="form-group col-md-9">
+                                <input id="tvSeries" type="text" name="tvSeries" placeholder="What series are you searching for?" class="form-control form-control-underlined">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <button type="submit" class="mr-5 mr-xl-5 btn btn-primary rounded-pill btn-block shadow-sm">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                <% } %>
+                <div class="ml-5 ml-lg-4 dropdown show">
+                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Discover
+                    </a>
+                  
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                      <a class="dropdown-item" href="/discover/movies">movies</a>
+                      <a class="dropdown-item" href="/discover/tv">tv series</a>
+                    </div>
+                </div>
                 <li class="nav-item">
-                <a class="nav-link" href="/logout">Logout</a>
+                    <div class="ml-5 ml-lg-4 dropdown show">
+                        <a class="dropdown-toggle" href="#" role="link" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-2x mt-1 fa-cog" aria-hidden="true"></i>
+                        </a>
+                      
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                          <a class="dropdown-item" href="/profile">view profile</a>
+                          <a class="dropdown-item" href="/settings">edit settings</a>
+                        </div>
+                    </div>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link" href="/profile">Profile</a>
-                </li>
+                    <a class="nav-link" href="/logout">Logout</a>
+                    </li>
             <% } %>
         </ul>
     </nav>

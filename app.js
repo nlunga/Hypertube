@@ -1,10 +1,12 @@
 const express = require('express');
 const app = express();
-const bodyParser = require('body-parser');
 const http = require('http').createServer(app);
+const io = require('socket.io')(http);
+const bodyParser = require('body-parser');
 const path = require('path');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
+const {conInit, con } = require('./config/connection');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -33,6 +35,7 @@ const viewMore = require('./routes/viewMore');
 const searchEngine = require('./routes/seachEngine');
 const sort = require('./routes/sort');
 const downloads = require('./routes/downloads');
+const test = require('./routes/test');
 const logout = require('./routes/logout');
 const { proppatch } = require('./routes/login');
 
@@ -67,9 +70,6 @@ app.use(session({
     saveUninitialized: false
 }));
 
-
-
-
 // using routes
 app.use('/', index);
 app.use('/login', login);
@@ -86,6 +86,35 @@ app.use('/title', viewMore);
 app.use('/search', searchEngine);
 app.use('/sort', sort);
 app.use('/download', downloads);
+app.use('/test', test);
 app.use('/logout', logout);
+
+io.on('connection', (socket) => {
+    // console.log('a user connected');
+ 
+    socket.on('comment', (comment) => {
+        console.log('comment: ');
+        console.log(comment);
+        if (comment.commentType === 'movie') {
+            let commentSql = `INSERT INTO comments (movieName, tvSeriesName, comment, username) VALUES (?, ?, ?, ?)`;
+            con.query(commentSql, [comment.mediaData, "NULL", comment.commentData, comment.user], (err, result) => {
+                if (err) throw err;
+                io.sockets.emit('message', comment);
+                console.log("1 record inserted");
+            });
+        } else {
+            let commentSql = `INSERT INTO comments (movieName, tvSeriesName, comment, username) VALUES (?, ?, ?, ?)`;
+            con.query(commentSql, ["NULL", comment.mediaData, comment.commentData, comment.user], (err, result) => {
+                if (err) throw err;
+                io.sockets.emit('message', data);
+                console.log("1 record inserted");
+            });
+        }
+    });
+
+    socket.on('disconnect', () => {
+      console.log('user disconnected');
+    });
+  });
 
 http.listen(port, () => console.log(`Server running on port ${port}!`));

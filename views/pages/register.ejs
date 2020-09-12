@@ -21,6 +21,19 @@
         </ul>
     </nav>
     <div class="container">
+        <div class="err">
+            <% if (errors !== undefined) { %>
+                <div class="alert alert-danger" role="alert">
+                    <ul>
+                        <% errors.forEach( (result) => { %>
+                            <% if (result.msg !== "Invalid value") {%>
+                                <li><%=result.msg%></li>
+                            <% } %>
+                        <% }) %>
+                    </ul>
+                </div>
+            <% } %>
+        </div>
         <form action="/signup" method="post">
             <div class="form-groups">
                 <label for="firstname">Firstname</label><br>

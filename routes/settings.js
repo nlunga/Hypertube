@@ -10,7 +10,8 @@ router.get('/', redirectLogin, (req, res) => {
     let user = req.session;
     res.render('pages/settings', {
         title : `Edit Profile`,
-        data: user
+        data: user,
+        isMovie: true
     });
 });
 

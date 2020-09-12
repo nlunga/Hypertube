@@ -19,21 +19,23 @@ const port = process.env.PORT;
 
 router.get('/', redirectDashboard, (req, res) => { 
     let user = req.session;
+    let err = undefined
     res.render('pages/register', {
         title : "Sign Up",
-        data: user
+        data: user,
+        errors: err
     });
 });
 
 router.post('/', [
     check('firstname')
     .isAlpha()
-    .not().isEmpty()
+    .not().isEmpty().withMessage('Firstname field must not be empty')
     .trim()
     .escape(),
     check('lastname')
     .isAlpha()
-    .not().isEmpty()
+    .not().isEmpty().withMessage('Lastname field must not be empty')
     .trim()
     .escape(),
     check('email')
@@ -41,7 +43,7 @@ router.post('/', [
     .normalizeEmail(),
     check('username')
     .isAlphanumeric()
-    .not().isEmpty()
+    .not().isEmpty().withMessage('Username field must not be empty')
     .trim()
     .escape()
     .isLength({ min: 4 }),
@@ -61,8 +63,13 @@ router.post('/', [
 ], (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()){
-        console.log(errors);
-        return res.status(422).json({errors : errors.array()});
+        // console.log(errors);
+        res.render('pages/register', {
+            title : "Sign Up",
+            data: req.session,
+            errors: errors.errors
+        });
+        // return res.status(422).json({errors : errors.array()});
     }else {
         bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
             var confirmed = 0;

@@ -8,16 +8,18 @@ const bcrypt = require('bcrypt');
 
 router.get('/', redirectDashboard, (req, res) => {
     let user = req.session;
+    let err = undefined
     res.render('pages/login', {
         title : "Login",
-        data: user
+        data: user,
+        errors: err
     });
 });
 
 router.post('/', [
   check('username')
     .isAlphanumeric()
-    .not().isEmpty()
+    .not().isEmpty().withMessage('Username field must not be empty')
     .trim()
     .escape()
     .isLength({ min: 4 }).withMessage('Username must be at least 4 characters in length.'),
@@ -31,8 +33,14 @@ router.post('/', [
     const errors = validationResult(req);
     if (!errors.isEmpty()){
         console.log(errors);
-        return res.status(422).json({errors : errors.array()});
+        return res.render('pages/login', {
+            title : "Login",
+            data: req.session,
+            errors: errors.errors
+        });
+        // return res.status(422).json({errors : errors.array()});
     }else {
+        // req.session.errors = undefined;
         let sql = `SELECT * FROM users WHERE username = ` + mysql.escape(req.body.username);
         con.query(sql, (err, result) => {
             if (err) throw err;
@@ -41,8 +49,17 @@ router.post('/', [
                         
                 bcrypt.compare(req.body.password, hash, (err, response) => {
                     if (result[0].verified === 0) {
-                        console.log("Please confirm your email");
-                        res.redirect("/login");
+                        let testErrors = [{
+                            msg: 'Please confirm your email.',
+                            param: 'password',
+                            location: 'body'
+                        }]
+                        // return res.redirect("/login");
+                        return res.render('pages/login', {
+                            title : "Login",
+                            data: req.session,
+                            errors: testErrors
+                        });
                     }else if (result[0].verified === 1) {
                         if (response === true) {
                             req.session.userId = result[0].id;
@@ -63,8 +80,17 @@ router.post('/', [
                                 return res.redirect('/discover');
                             });
                         }else {
-                            res.redirect("/login");
-                            return console.log('password does not match');
+                            let testErrors = [{
+                                msg: 'Password does not match.',
+                                param: 'password',
+                                location: 'body'
+                            }]
+                            // return res.redirect("/login");
+                            return res.render('pages/login', {
+                                title : "Login",
+                                data: req.session,
+                                errors: testErrors
+                            });
                         }
                     }
                 });

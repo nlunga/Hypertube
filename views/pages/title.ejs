@@ -123,6 +123,45 @@
                             <p><%=mediaInfo.vote_average%>/10<br><small id="releaseDate" class="text-muted"><%=mediaInfo.vote_count%></small></p>
                         </div>
                     </div>
+                    <hr>
+                     <div class="row">
+                        <div class="col-md-12 mb-2">
+                            <div id="accordion">
+                                <div class="card">
+                                <div class="card-header" id="headingOne">
+                                    <h5 class="mb-0">
+                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne<%=index%>">
+                                        <a href="#"><i class="fa fa-comments" aria-hidden="true">View Comments</i></a>
+                                    </button>
+                                    </h5>
+                                </div>
+                                
+                                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                    <div class="card-body">
+                                        <div id="chat-window">
+                                            <div id="output">
+                                                This is a test
+                                                <% if (pastComments !== undefined) { %>
+                                                    <%pastComments.forEach(results => { %>
+                                                        <%if (results.movieName === "NULL" && results.tvSeriesName === seaName) { %>
+                                                            <p><strong><%=results.username%></strong>: <%=results.comment%></p>
+                                                        <% } %>
+                                                    <% })%>
+                                                <% } %>
+                                            </div>
+                                            <div id="feedback"></div>
+                                        </div>
+
+                                        <input type="text" class="form-control commentInput" name="comment" id="comment" placeholder="Add a comment">
+                                        <input type="hidden" name="tvSeriesName" id="tvSeriesName" value="<%=mediaInfo.name%> <%=seaEpi%>">
+                                        <input type="hidden" name="userName" id="userName" value="<%=data.username%>">
+                                        <button class="btn btn-primary addCommentBtn" name="sendBtn" id="sendBtn" type="submit"><i class="fa fa-plus-square" aria-hidden="true">Add Comment</i></button>
+                                    </div>
+                                </div>
+                                </div>
+                            </div> 
+                        </div>
+                    </div>    
                 </div>
             </div>
         <% } else { %>
@@ -187,6 +226,44 @@
                                     <p><%=mediaInfo.vote_average%>/10<br><small id="releaseDate" class="text-muted"><%=mediaInfo.vote_count%></small></p>
                                 </div>
                             </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div id="accordion">
+                                        <div class="card">
+                                        <div class="card-header" id="headingOne">
+                                            <h5 class="mb-0 ">
+                                            <button class="btn btn-link " data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne<%=index%>">
+                                                <a href="#"><i class="fa fa-comments" aria-hidden="true">View Comments</i></a>
+                                            </button>
+                                            </h5>
+                                        </div>
+                                        
+                                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                            <div class="card-body">
+                                                <div id="chat-window">
+                                                    <div id="output">
+                                                        <% if (pastComments !== undefined) { %>
+                                                            <%pastComments.forEach(results => { %>
+                                                                <%if (results.tvSeriesName === "NULL" && results.movieName === mediaInfo.title) { %>
+                                                                    <p><strong><%=results.username%></strong>: <%=results.comment%></p>
+                                                                <% } %>
+                                                            <% })%>
+                                                        <% } %>
+                                                    </div>
+                                                    <div id="feedback"></div>
+                                                </div>
+
+                                                <input type="text" class="form-control commentInput" name="comment" id="comment" placeholder="Add a comment">
+                                                <input type="hidden" name="movieName" id="movieName" value="<%=mediaInfo.title%>">
+                                                <input type="hidden" name="userName" id="userName" value="<%=data.username%>">
+                                                <button class="btn btn-primary addCommentBtn" name="sendBtn" id="sendBtn" type="submit"><i class="fa fa-plus-square" aria-hidden="true">Add Comment</i></button>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>    
                         </div>
                     </div>
                 <% } else { %>
@@ -282,9 +359,43 @@
                                     <p><%=mediaInfo.vote_average%>/10<br><small id="releaseDate" class="text-muted"><%=mediaInfo.vote_count%></small></p>
                                 </div>
                             </div>
+                            <hr>
+                             <!-- <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div id="accordion">
+                                        <div class="card">
+                                        <div class="card-header" id="headingOne">
+                                            <h5 class="mb-0">
+                                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne<%=index%>">
+                                                <a href="#"><i class="fa fa-comments" aria-hidden="true">View Comments</i></a>
+                                            </button>
+                                            </h5>
+                                        </div>
+                                        
+                                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                            <div class="card-body">
+                                                <%// mediaInfo.seasons.forEach((data) => { %>
+                                                    <%// if (data.season_number == index) { %>
+                                                        <%// for (let i = 1; i <= data.episode_count; i++) { %>
+                                                            <!-- <a href="/title/tv/1/<%//=mediaInfo.id%>/season=<%//=index%>/episode=<%//=i%>" >Episode <%//=i%></a><hr><br> -->
+                                                        <%// } %>
+                                                    <%// } %>
+                                                <%// }) %>
+                                                <!-- hi there  -->
+                                            <!--    <form action="/comment" method="post">
+                                                    <input type="text" class="form-control commentInput" placeholder="Add a comment">
+                                                    <button class="btn btn-primary addCommentBtn" type="submit"><i class="fa fa-plus-square" aria-hidden="true">Add Comment</i></button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>     -->
                         </div>
                     </div>
                 <% } %>
         <% } %>
     </div>
+    <script src="/socket.io/socket.io.js"></script>
 <%- include('./../partials/footer')%>
