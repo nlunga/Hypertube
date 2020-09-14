@@ -68,7 +68,35 @@ router.post('/', [
                             req.session.username = result[0].username;
                             req.session.email = result[0].email;
                             req.session.password = result[0].password;
+
+                            var currentDate;
+                            var d = new Date();
                             
+                            con.query(`SELECT * FROM mediaInfo`, (err, results) => {
+                                if (err) throw err;
+                                if (results.length === 0) {
+                                    console.log("No results found");
+                                } else {
+                                    results.forEach((item, index, array) => {
+                                        console.log(item.entryDate);
+                                        var stuff = new Date(item.entryDate);
+                                        var Difference_In_Time = d.getTime() - stuff.getTime(); 
+  
+                                        // To calculate the no. of days between two dates 
+                                        var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24); 
+
+                                        if (Difference_In_Days < 30) {
+                                            console.log('Still under the same month')
+                                        }else {
+                                            con.query(`DELETE FROM mediaInfo WHERE entryDate = '${item.entryDate}'`, (err, del) => {
+                                                if (err) throw err;
+                                                console.log('Data has been deleted');
+                                            })
+                                        }
+                                    })
+                                }
+                            })
+
                             con.query(`SELECT * FROM images WHERE username = '${req.body.username}' LIMIT 1`, (err, tableVal) => {
                                 if (err) throw err;
                                 if (tableVal.length === 0) {

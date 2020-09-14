@@ -84,12 +84,10 @@ router.get('/stream/:mediaName', async (req, res) => {
     let movieFormat = [];
     let movieSeeder = [];
     torrents.forEach((item, index, array) => {
-        // if (index && index < 50) {
-            if (item.title.search("mkv")  || item.title.search("mp4") ) {
-                movieFormat.push(item);
-                movieSeeder.push(item.seeds);
-            }
-        // }
+        if (item.title.search("mkv")  || item.title.search("mp4") ) {
+            movieFormat.push(item);
+            movieSeeder.push(item.seeds);
+        }
     });
 
     var biggestSeeder = movieSeeder.reduce((a, b) => {
@@ -97,53 +95,123 @@ router.get('/stream/:mediaName', async (req, res) => {
     });
 
     var magnetLink;
+    var mediaData;
     movieFormat.forEach((item, index, array) => {
         if (item.seeds === biggestSeeder){
             magnetLink = item.magnet;
-            // console.log(item);
+            mediaData = item;
         }
     });
-    if (magnetLink != undefined) {
-        var engine = torrentStream(magnetLink, dataStream);
-        engine.on('ready', function() {
-            engine.files.forEach(function(file) {
-                var pattMp4 = new RegExp(".mp4");
-                var pattMkv = new RegExp(".mkv");
-                var form;
-                if (pattMp4.test(file.name)) {
-                    form = ".mp4";
-                } else if (pattMkv.test(file.name)) {
-                    form = ".mkv";
-                }
 
-                if (form != undefined)
-                {
-                    const fileSize = engine.files[0].length;
-                    const range = req.headers.range;
-    
-                    if (range) {
-                        const parts = range.replace(/bytes=/, "").split("-");
-                        const start = parseInt(parts[0], 10);
-                        const end = parts[1] ? parseInt(parts[1], 10) : fileSize-1;
-    
-                        const chunksize = (end-start)+1;
-                        // const file = file.createReadStream(moviePath, {start, end});
-                        const head = {
-                            'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-                            'Accept-Ranges': 'bytes',
-                            'Content-Length': chunksize,
-                            'Content-Type': `video/${form}`,
-                        }
-                        res.writeHead(206, head);
-                        var stream = file.createReadStream({start, end});
-                        stream.pipe(res);
-                    }
+    con.query(`SELECT * FROM mediaInfo WHERE mediaName = '${mediaData.title}' LIMIT 1`, (err, results) => {
+        if (err) throw err;
+        var currentDate;
+        var d = new Date();
+        var y = d.getFullYear();
+        var r = d.getDate();
+        var m = d.getMonth();
+        currentDate = y + '-' + (m+1) + '-' + r;
+        if (results.length == 0) {
+            con.query(`INSERT INTO mediaInfo (mediaName, mediaMagnet , entryDate, mediaSize, currentSize, status) VALUES (?, ?, ?, ?, ?, ?)`, [mediaData.title, magnetLink, currentDate, mediaData.size, 0.0, 0], (err, data) => {
+                if (err) throw err;
+                console.log("1 record has been inserted");
+            })
+        }else if (results[0].status === 0) {
+            if (results[0].currentSize !== results[0].mediaSize) {
+                if (results[0].mediaMagnet != undefined) {
+                    var engine = torrentStream(results[0].mediaMagnet, dataStream);
+                    engine.on('ready', function() {
+                        engine.files.forEach(function(file) {
+                            var pattMp4 = new RegExp(".mp4");
+                            var pattMkv = new RegExp(".mkv");
+                            var form;
+                            if (pattMp4.test(file.name)) {
+                                form = ".mp4";
+                            } else if (pattMkv.test(file.name)) {
+                                form = ".mkv";
+                            }
+            
+                            if (form != undefined)
+                            {
+                                const fileSize = engine.files[0].length;
+                                const range = req.headers.range;
+                
+                                if (range) {
+                                    const parts = range.replace(/bytes=/, "").split("-");
+                                    const start = parseInt(parts[0], 10);
+                                    const end = parts[1] ? parseInt(parts[1], 10) : fileSize-1;
+                
+                                    const chunksize = (end-start)+1;
+                                    // const file = file.createReadStream(moviePath, {start, end});
+                                    const head = {
+                                        'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+                                        'Accept-Ranges': 'bytes',
+                                        'Content-Length': chunksize,
+                                        'Content-Type': `video/${form}`,
+                                    }
+                                    res.writeHead(206, head);
+                                    var stream = file.createReadStream({start, end});
+                                    stream.pipe(res);
+                                }
+                            }
+                        });
+                    }).on('download', () => {
+                        var downloaded = (engine.swarm.downloaded/1073741824);
+                        con.query(`UPDATE mediaInfo SET currentSize = '${downloaded}' WHERE mediaMagnet = '${results[0].mediaMagnet}'`)
+                        console.log('percentage: ' + engine.swarm.downloaded/1073741824);
+                    }).on('idle', () => {
+                        con.query(`UPDATE mediaInfo SET status = 1 WHERE mediaMagnet = '${results[0].mediaMagnet}'`)
+                        console.log('Download complete');
+                    });
                 }
-            });
-        }).on('download', () => {
-            console.log('percentage: ' + engine.swarm.downloaded);
-        })
-    }
+            }
+        }else {
+            //////////////////////////////
+            //read locally
+        }
+    });
+
+    // if (magnetLink != undefined) {
+    //     var engine = torrentStream(magnetLink, dataStream);
+    //     engine.on('ready', function() {
+    //         engine.files.forEach(function(file) {
+    //             var pattMp4 = new RegExp(".mp4");
+    //             var pattMkv = new RegExp(".mkv");
+    //             var form;
+    //             if (pattMp4.test(file.name)) {
+    //                 form = ".mp4";
+    //             } else if (pattMkv.test(file.name)) {
+    //                 form = ".mkv";
+    //             }
+
+    //             if (form != undefined)
+    //             {
+    //                 const fileSize = engine.files[0].length;
+    //                 const range = req.headers.range;
+    
+    //                 if (range) {
+    //                     const parts = range.replace(/bytes=/, "").split("-");
+    //                     const start = parseInt(parts[0], 10);
+    //                     const end = parts[1] ? parseInt(parts[1], 10) : fileSize-1;
+    
+    //                     const chunksize = (end-start)+1;
+    //                     // const file = file.createReadStream(moviePath, {start, end});
+    //                     const head = {
+    //                         'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+    //                         'Accept-Ranges': 'bytes',
+    //                         'Content-Length': chunksize,
+    //                         'Content-Type': `video/${form}`,
+    //                     }
+    //                     res.writeHead(206, head);
+    //                     var stream = file.createReadStream({start, end});
+    //                     stream.pipe(res);
+    //                 }
+    //             }
+    //         });
+    //     }).on('download', () => {
+    //         console.log('percentage: ' + engine.swarm.downloaded);
+    //     })
+    // }
 });
 
 module.exports = router;
