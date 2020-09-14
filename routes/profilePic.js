@@ -24,6 +24,18 @@ router.post('/', upload.single('myImage'), (req, res) => {
             const imageName = `/uploads/${req.file.filename}`;
             
             const sql = `INSERT INTO images(imagePath, username) VALUES (?, ?)`;
+
+            con.query(`SELECT * FROM comments WHERE username = '${req.session.username}'`, (err, result) => {
+                if (err) throw err;
+                if (result.length !== 0) {
+                    con.query('UPDATE images SET imagePath = ? WHERE username = ?', [imageName, req.session.username], (err, db) => {
+                        if (err) throw err;
+                        req.session.image = imageName;
+                        console.log(db.affectedRows + " record(s) updated");
+                    })
+                }
+            })
+            
             con.query(sql, [imageName, req.session.username], (err, result) => {
                 if (err) throw err;
                 req.session.image = imageName;
@@ -34,6 +46,16 @@ router.post('/', upload.single('myImage'), (req, res) => {
             const imageName = `/uploads/${req.file.filename}`;
 
             const sql = `UPDATE images SET imagePath = ? WHERE username = ?`;
+            con.query(`SELECT * FROM comments WHERE username = '${req.session.username}'`, (err, result) => {
+                if (err) throw err;
+                if (result.length !== 0) {
+                    con.query('UPDATE images SET imagePath = ? WHERE username = ?', [imageName, req.session.username], (err, db) => {
+                        if (err) throw err;
+                        req.session.image = imageName;
+                        console.log(db.affectedRows + " record(s) updated");
+                    })
+                }
+            })
             con.query(sql, [imageName, req.session.username], (err, result) => {
                 if (err) throw err;
                 req.session.image = imageName;

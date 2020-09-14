@@ -26,19 +26,36 @@ router.post('/movies', [
             let queryString = req.body.movie;
             
             let searchMovieUrl = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&language=en-US&query=${queryString}&page=1&include_adult=false`;
+            let ytsSource = `https://yts.mx/api/v2/list_movies.json?query_term=${queryString}`;
             
             fetch(searchMovieUrl)
                 .then(response => response.json())
                 .then(dat => {
-                    res.render('pages/searchResults',{
-                        title: 'Search Results',
-                        data: user,
-                        popular: dat.results,
-                        isMovie: true,
-                        searchFor: queryString,
-                        pageNo: dat.page,
-                        totalPages: dat.total_pages
-                    })
+                    if (dat !== undefined) {
+                        res.render('pages/searchResults',{
+                            title: 'Search Results',
+                            data: user,
+                            popular: dat.results,
+                            isMovie: true,
+                            searchFor: queryString,
+                            pageNo: dat.page,
+                            totalPages: dat.total_pages
+                        })
+                    }else {
+                        return fetch(ytsSource)
+                            // .then(response => response.json())
+                            // .then(dat => {
+                            //     res.render('pages/searchResults',{
+                            //         title: 'Search Results',
+                            //         data: user,
+                            //         popular: dat.results,
+                            //         isMovie: true,
+                            //         searchFor: queryString,
+                            //         pageNo: dat.page,
+                            //         totalPages: undefined
+                            //     })
+                            // })
+                    }
                 })
         }
 });

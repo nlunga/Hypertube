@@ -6,6 +6,7 @@ const {redirectLogin, redirectDashboard} = require('./accessControls');
 const dotenv = require('dotenv');
 const fetch = require('node-fetch');
 const TorrentIndexer = require("torrent-indexer");
+const TorrentSearchApi = require('torrent-search-api');
 
 os.tmpDir = os.tmpdir;
 
@@ -28,12 +29,41 @@ router.get('/:mediaName/:titleRoute',async (req, res) => {
     // console.log(req.params.mediaName);
     // const movie = encodeURI(req.params.mediaName);
 
-    const movie = encodeURI(req.params.mediaName);
-    const torrentIndexer = new TorrentIndexer();
+    // const movie = encodeURI(req.params.mediaName);
+    // const torrentIndexer = new TorrentIndexer();
     
-    const torrents = await torrentIndexer.search(req.params.mediaName);
+    // const torrents = await torrentIndexer.search(req.params.mediaName);
+    TorrentSearchApi.enableProvider('ThePirateBay'); 
+
+    // Search '1080' in 'Movies' category and limit to 20 results
+    const torrents = await TorrentSearchApi.search(req.params.mediaName, 'Video', 20);
+
+    let movieFormat = [];
+    let movieSeeder = [];
+    torrents.forEach((item, index, array) => {
+        // if (index && index < 50) {
+            if (item.title.search("mkv")  || item.title.search("mp4") ) {
+                movieFormat.push(item);
+                // console.log(item);
+                movieSeeder.push(item.seeds);
+            }
+        // }
+    });
+
+    var biggestSeeder = movieSeeder.reduce((a, b) => {
+        return Math.max(a, b);
+    });
+
+    // console.log(biggestSeeder);
+
+    var magnetLink;
+    movieFormat.forEach((item, index, array) => {
+        if (item.seeds === biggestSeeder){
+            magnetLink = item.magnet;
+            // console.log(item);
+        }
+    });
     // if (torrents.length !== 0) {
-        const magnetLink = torrents[0].link;
         const torrent = new Torrent(magnetLink, opts);
             
         //torrent.on('progress', console.log); // prints torrent.status()

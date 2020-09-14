@@ -24,11 +24,7 @@
         <%if (isSeason === true) { %>
             <div class="row">
                 <div class="col-md-2">
-                    <% if (mediaInfo.poster_path) { %>
-                        <img src="https://image.tmdb.org/t/p/w185/<%=mediaInfo.poster_path%>" alt="<%=mediaInfo.name%>"><hr>
-                    <% } else { %>
-                        <img class="poster-placeholder" src="https://moviereelist.com/wp-content/uploads/2019/07/poster-placeholder.jpg" alt="<%=mediaInfo.name%>"><hr>
-                    <% } %>
+                    <img src="https://image.tmdb.org/t/p/w185/<%=mediaInfo.poster_path%>" class="mb-5" alt="<%=mediaInfo.name%>"><hr>
                     <% for (let index = 1; index <= mediaInfo.number_of_seasons; index++) { %>
                         <div class="row">
                             <div class="col-md-12 mb-2">
@@ -61,12 +57,12 @@
                 </div>
                 <div class="col-md-9">
                     <div class="c-video">
-                        <video class="video" src="/assets/videos/Placeholder Video.mp4"></video>
+                        <video class="video" src="http://localhost:8626/watch/stream/<%=mediaInfo.name%> <%=seaEpi%>" controls></video>
                     </div>
                     <hr>
                     <div class="row">
                         <div class="col-md-2 mx-auto">
-                            <a href="/watch/<%=mediaInfo.name%> <%=seaEpi%><%//=titleRoute%>"><i class="fa fa-eye" aria-hidden="true">Watch</i></a>
+                            <a href="/watch/<%=mediaInfo.name%> <%=seaEpi%>/<%=titleRoute%>"><i class="fa fa-eye" aria-hidden="true">Watch</i></a>
                         </div>
                         <div class="col-md-2 mx-auto">
                             <a href="/download/<%=mediaInfo.name%> <%=seaEpi%>/<%=titleRoute%>"><i class="fa fa-download" aria-hidden="true">Download</i></a>
@@ -151,10 +147,7 @@
                                                 <% if (pastComments !== undefined) { %>
                                                     <%pastComments.forEach(results => { %>
                                                         <%if (results.movieName === "NULL" && results.tvSeriesName === seaName) { %>
-                                                            <p>
-                                                                <a href="/viewProfile/<%=results.username%>"><img class="avatar" src="<%results.imagePath%>" alt="<%=results.username%>"></a>
-                                                                <strong><%=results.username%></strong>: <%=results.comment%>
-                                                            </p>
+                                                            <p><strong><%=results.username%></strong>: <%=results.comment%></p>
                                                         <% } %>
                                                     <% })%>
                                                 <% } %>
@@ -165,11 +158,6 @@
                                         <input type="text" class="form-control commentInput" name="comment" id="comment" placeholder="Add a comment">
                                         <input type="hidden" name="tvSeriesName" id="tvSeriesName" value="<%=mediaInfo.name%> <%=seaEpi%>">
                                         <input type="hidden" name="userName" id="userName" value="<%=data.username%>">
-                                        <% if (data.image) { %>
-                                            <input type="hidden" name="image" id="image" value="<%=data.image%>">
-                                        <% } else { %>
-                                            <input type="hidden" name="image" id="image" value="https://clinicforspecialchildren.org/wp-content/uploads/2016/08/avatar-placeholder.gif">
-                                        <% } %>
                                         <button class="btn btn-primary addCommentBtn" name="sendBtn" id="sendBtn" type="submit"><i class="fa fa-plus-square" aria-hidden="true">Add Comment</i></button>
                                     </div>
                                 </div>
@@ -183,20 +171,16 @@
                 <%if (isMovie === true) { %>
                     <div class="row">
                         <div class="col-md-2">
-                            <% if (mediaInfo.poster_path) { %>
-                                <img src="https://image.tmdb.org/t/p/w185/<%=mediaInfo.poster_path%>" alt="<%=mediaInfo.title%>"><hr>
-                            <% } else { %>
-                                <img class="poster-placeholder" src="https://moviereelist.com/wp-content/uploads/2019/07/poster-placeholder.jpg" alt="<%=mediaInfo.title%>"><hr>
-                            <% } %>
+                            <img src="https://image.tmdb.org/t/p/w185/<%=mediaInfo.poster_path%>" alt="<%=mediaInfo.title%>">
                         </div>
                         <div class="col-md-9">
                             <div class="c-video">
-                                <video class="video" src="/assets/videos/Placeholder Video.mp4"></video>
+                                <video class="video" src="http://localhost:8626/watch/stream/<%=mediaInfo.title%>" controls></video>
                             </div>
                             <hr>
                             <div class="row">
                                 <div class="col-md-2 mx-auto">
-                                    <a href="/watch/<%=mediaInfo.title%><%//=titleRoute%>"><i class="fa fa-eye" aria-hidden="true">Watch</i></a>
+                                    <a href="/watch/<%=mediaInfo.title%>/<%=titleRoute%>"><i class="fa fa-eye" aria-hidden="true">Watch</i></a>
                                 </div>
                                 <div class="col-md-2 mx-auto">
                                     <a href="/download/<%=mediaInfo.title%>/<%=titleRoute%>"><i class="fa fa-download" aria-hidden="true">Download</i></a>
@@ -268,10 +252,7 @@
                                                         <% if (pastComments !== undefined) { %>
                                                             <%pastComments.forEach(results => { %>
                                                                 <%if (results.tvSeriesName === "NULL" && results.movieName === mediaInfo.title) { %>
-                                                                    <p>
-                                                                        <a href="/viewProfile/<%=results.username%>"><img class="avatar" src="<%=results.imagePath%>" alt="<%=results.username%>"></a>
-                                                                        <strong><%=results.username%></strong>: <%=results.comment%>
-                                                                    </p>
+                                                                    <p><strong><%=results.username%></strong>: <%=results.comment%></p>
                                                                 <% } %>
                                                             <% })%>
                                                         <% } %>
@@ -282,11 +263,6 @@
                                                 <input type="text" class="form-control commentInput" name="comment" id="comment" placeholder="Add a comment">
                                                 <input type="hidden" name="movieName" id="movieName" value="<%=mediaInfo.title%>">
                                                 <input type="hidden" name="userName" id="userName" value="<%=data.username%>">
-                                                <% if (data.image) { %>
-                                                    <input type="hidden" name="image" id="image" value="<%=data.image%>">
-                                                <% } else { %>
-                                                    <input type="hidden" name="image" id="image" value="https://clinicforspecialchildren.org/wp-content/uploads/2016/08/avatar-placeholder.gif">
-                                                <% } %>
                                                 <button class="btn btn-primary addCommentBtn" name="sendBtn" id="sendBtn" type="submit"><i class="fa fa-plus-square" aria-hidden="true">Add Comment</i></button>
                                             </div>
                                         </div>
@@ -299,11 +275,7 @@
                 <% } else { %>
                     <div class="row">
                         <div class="col-md-2">
-                            <% if (mediaInfo.poster_path) { %>
-                                <img src="https://image.tmdb.org/t/p/w185/<%=mediaInfo.poster_path%>" alt="<%=mediaInfo.name%>"><hr>
-                            <% } else { %>
-                                <img class="poster-placeholder" src="https://moviereelist.com/wp-content/uploads/2019/07/poster-placeholder.jpg" alt="<%=mediaInfo.name%>"><hr>
-                            <% } %>
+                            <img src="https://image.tmdb.org/t/p/w185/<%=mediaInfo.poster_path%>" class="mb-5" alt="<%=mediaInfo.name%>"><hr>
                             <% for (let index = 1; index <= mediaInfo.number_of_seasons; index++) { %>
                                 <div class="row">
                                     <div class="col-md-12 mb-2">

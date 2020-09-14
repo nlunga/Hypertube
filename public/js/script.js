@@ -4,6 +4,7 @@ var movie = document.getElementById('movieName');
 var tvSeries = document.getElementById('tvSeriesName');
 var comment = document.getElementById('comment');
 var user = document.getElementById('userName');
+var image = document.getElementById('image');
 var sendBtn = document.getElementById('sendBtn');
 
 // var tvcomment = document.getElementById('tvcomment');
@@ -26,6 +27,7 @@ sendBtn.addEventListener('click', () => {
             mediaData: movie.value,
             commentData: comment.value, //I might wanna add the use who is commenting
             user: user.value,
+            image: image.value,
             commentType: "movie"
         });
     } else {
@@ -33,6 +35,7 @@ sendBtn.addEventListener('click', () => {
             mediaData: tv.value,
             commentData: comment.value, //I might wanna add the use who is commenting
             user: user.value,
+            image: image.value,
             commentType: "tv"
         });
     }

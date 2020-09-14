@@ -22,18 +22,18 @@ router.get('/', redirectLogin, (req, res) => {
 router.get('/video', redirectLogin, (req, res) => {
     const path = 'C:\\Users\\User\\Desktop\\Hypertube\\public\\assets\\videos\\Placeholder Video.mp4';
     const stat = fs.statSync(path);
-    console.log(stat);
+    // console.log(stat);
     const fileSize = stat.size;
     const range = req.headers.range;
-    console.log("This is range " + range);
+    // console.log("This is range " + range);
 
     if (range) {
         const parts = range.replace(/bytes=/, "").split("-");
-        console.log(parts);
+        // console.log(parts);
         const start = parseInt(parts[0], 10);
-        console.log("start " + start);
+        // console.log("start " + start);
         const end = parts[1] ? parseInt(parts[1], 10) : fileSize-1;
-        console.log("end " + end);
+        // console.log("end " + end);
 
         const chunksize = (end-start)+1;
         const file = fs.createReadStream(path, {start, end});

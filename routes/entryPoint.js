@@ -59,8 +59,6 @@ router.get('/tv', redirectLogin, (req, res) => {
     fetch(popularUrl)
         .then(response => response.json())
         .then(dat => {
-            console.log(dat);
-            // console.log(dat.results[0].name);
             res.render('pages/discover',{
                 title: 'Entry',
                 data: user,

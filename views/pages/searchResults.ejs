@@ -60,10 +60,20 @@
                 <% popular.forEach((popularMovies) => { %>                
                     <div class="col-lg-2">
                         <a href="/title/s/movies/<%=searchFor%>/<%=pageNo%>/<%=popularMovies.id%>">
-                            <!-- <div class="col-lg-20">
-                                <p class="mt-5 mt-lg-3"><%///=popularMovies.title%></p>
-                            </div> -->
-                            <img src="https://image.tmdb.org/t/p/w185/<%=popularMovies.poster_path%>" alt="<%=popularMovies.title%>"><br>
+                            <% if (popularMovies.title.length > 8) { %>
+                                <% var str = popularMovies.title.slice(0, 9) %>
+                                <h6 class="mp-2"><%=str%>... <i class="fa fa-star" style="color:gold" aria-hidden="true"></i><span style="color:black;"> <small style="color: grey;"><%=popularMovies.vote_average%></small>/10</span></h6>
+                            <% } else { %>
+                                <h6><%=popularMovies.title%> <i class="fa fa-star" style="color:gold" aria-hidden="true"></i><span style="color:black;"> <small style="color: grey;"><%=popularMovies.vote_average%></small>/10</span></h6>
+                            <% } %>
+                            
+                            <% if (popularMovies.poster_path) { %>
+                                <img src="https://image.tmdb.org/t/p/w185/<%=popularMovies.poster_path%>" alt="<%=popularMovies.title%>"><br>
+                            <% } else { %>
+                                <img class="poster-placeholder" src="https://moviereelist.com/wp-content/uploads/2019/07/poster-placeholder.jpg" alt="<%=popularMovies.title%>"><br>
+                            <% } %>
+                        </a>
+                            
                         </a>
                         <small id="releaseDate" class="text-muted">Released <% var mydate = new Date(popularMovies.release_date);%> <%=mydate.toDateString();%></small>
                     </div>
@@ -82,14 +92,24 @@
                 <% } %>
             </div>
         <% } else if (popular !== undefined && isMovie === false) {%>
+            this is a series
             <div class="row">
                 <% popular.forEach((popularMovies) => { %>                
                     <div class="col-lg-2">
                         <a href="/title/s/tv/<%=searchFor%>/<%=pageNo%>/<%=popularMovies.id%>">
-                            <!-- <div class="col-lg-20">
-                                <p class="mt-5 mt-lg-3"><%///=popularMovies.title%></p>
-                            </div> -->
-                            <img src="https://image.tmdb.org/t/p/w185/<%=popularMovies.poster_path%>" alt="<%=popularMovies.title%>"><br>
+
+                            <% if (popularMovies.name.length > 8) { %>
+                                <% var str = popularMovies.name.slice(0, 9) %>
+                                <h6 class="mp-2"><%=str%>... <i class="fa fa-star" style="color:gold" aria-hidden="true"></i><span style="color:black;"> <small style="color: grey;"><%=popularMovies.vote_average%></small>/10</span></h6>
+                            <% } else { %>
+                                <h6><%=popularMovies.name%> <i class="fa fa-star" style="color:gold" aria-hidden="true"></i><span style="color:black;"> <small style="color: grey;"><%=popularMovies.vote_average%></small>/10</span></h6>
+                            <% } %>
+                            
+                            <% if (popularMovies.poster_path) { %>
+                                <img src="https://image.tmdb.org/t/p/w185/<%=popularMovies.poster_path%>" alt="<%=popularMovies.name%>"><br>
+                            <% } else { %>
+                                <img class="poster-placeholder" src="https://moviereelist.com/wp-content/uploads/2019/07/poster-placeholder.jpg" alt="<%=popularMovies.name%>"><br>
+                            <% } %>
                         </a>
                         <small id="releaseDate" class="text-muted">Released <% var mydate = new Date(popularMovies.first_air_date);%> <%=mydate.toDateString();%></small>
                     </div>

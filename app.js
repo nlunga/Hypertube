@@ -32,9 +32,11 @@ const profile = require('./routes/profile');
 const profilePic = require('./routes/profilePic');
 const settings = require('./routes/settings');
 const viewMore = require('./routes/viewMore');
+const viewProfile = require('./routes/viewProfile');
 const searchEngine = require('./routes/seachEngine');
 const sort = require('./routes/sort');
 const downloads = require('./routes/downloads');
+const watch = require('./routes/watch');
 const test = require('./routes/test');
 const logout = require('./routes/logout');
 const { proppatch } = require('./routes/login');
@@ -83,9 +85,11 @@ app.use('/profile', profile);
 app.use('/set-profilePic', profilePic);
 app.use('/settings', settings);
 app.use('/title', viewMore);
+app.use('/viewProfile', viewProfile);
 app.use('/search', searchEngine);
 app.use('/sort', sort);
 app.use('/download', downloads);
+app.use('/watch', watch);
 app.use('/test', test);
 app.use('/logout', logout);
 
@@ -96,15 +100,15 @@ io.on('connection', (socket) => {
         console.log('comment: ');
         console.log(comment);
         if (comment.commentType === 'movie') {
-            let commentSql = `INSERT INTO comments (movieName, tvSeriesName, comment, username) VALUES (?, ?, ?, ?)`;
-            con.query(commentSql, [comment.mediaData, "NULL", comment.commentData, comment.user], (err, result) => {
+            let commentSql = `INSERT INTO comments (movieName, tvSeriesName, comment, username, imagePath) VALUES (?, ?, ?, ?, ?)`;
+            con.query(commentSql, [comment.mediaData, "NULL", comment.commentData, comment.user, comment.image], (err, result) => {
                 if (err) throw err;
                 io.sockets.emit('message', comment);
                 console.log("1 record inserted");
             });
         } else {
-            let commentSql = `INSERT INTO comments (movieName, tvSeriesName, comment, username) VALUES (?, ?, ?, ?)`;
-            con.query(commentSql, ["NULL", comment.mediaData, comment.commentData, comment.user], (err, result) => {
+            let commentSql = `INSERT INTO comments (movieName, tvSeriesName, comment, username, imagePath) VALUES (?, ?, ?, ?, ?)`;
+            con.query(commentSql, ["NULL", comment.mediaData, comment.commentData, comment.user, comment.image], (err, result) => {
                 if (err) throw err;
                 io.sockets.emit('message', data);
                 console.log("1 record inserted");
