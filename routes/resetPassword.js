@@ -19,13 +19,20 @@ router.get('/:token', (req, res) => {
     res.render('pages/resetPassword', {
         title: "Reset Password",
         token: userToken,
-        data: user
+        data: user,
+        errors: undefined
     });
 });
 
 router.post('/:token', [
-    check('password').isLength({ min: 5 }),
-    check('confPassword').custom((value, { req }) => { 
+    check('password')
+        .isLength({ min:8 }).withMessage('Password must be at least 8 characters in length.')
+        .matches('[0-9]').withMessage('Password must contain at least 1 number.')
+        .matches('[a-z]').withMessage('Password must contain at least 1 lowercase letter.')
+        .matches('[A-Z]').withMessage('Password must contain at least 1 uppercase letter.')
+        .matches(['[^A-Za-z0-9]']).withMessage('Password must contain at least 1 special character.'),
+    check('confPassword')
+        .custom((value, { req }) => { 
         if (value !== req.body.password) {
         throw new Error('Password confirmation does not match password');
         }
@@ -35,8 +42,15 @@ router.post('/:token', [
     ], (req, res) => {
         const errors = validationResult(req);
     if (!errors.isEmpty()){
-        console.log(errors);
-        return res.status(422).json({errors : errors.array()});
+        // console.log(errors);
+        // return res.status(422).json({errors : errors.array()});
+        let user = req.session;
+        res.render('pages/resetPassword', {
+            title: "Reset Password",
+            token: userToken,
+            data: user,
+            errors: errors.errors
+        });
     }else {
         const userToken = req.params.token;
         

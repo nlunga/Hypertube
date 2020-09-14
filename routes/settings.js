@@ -11,19 +11,26 @@ router.get('/', redirectLogin, (req, res) => {
     res.render('pages/settings', {
         title : `Edit Profile`,
         data: user,
-        isMovie: true
+        isMovie: true,
+        errors: undefined
     });
 });
 
 router.post('/firstname', check('firstname')
-    .isAlpha()
-    .not().isEmpty()
+    .isAlpha().withMessage('Firstname must be alphabetic.')
+    .not().isEmpty().withMessage('Firstname field must not be empty')
     .trim()
     .escape(),(req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()){
-        console.log(errors);
-        return res.status(422).json({errors : errors.array()});
+        // console.log(errors);
+        // return res.status(422).json({errors : errors.array()});
+        return res.render('pages/settings', {
+            title : "Edit Profile",
+            data: req.session,
+            errors: errors.errors,
+            isMovie: true
+        });
     }else {
         let sql = `UPDATE users SET firstName = '${req.body.firstname}' WHERE username = '${req.session.username}'`;
         con.query(sql, (err, result) => {
@@ -36,14 +43,20 @@ router.post('/firstname', check('firstname')
 });
 
 router.post('/lastname', check('lastname')
-    .isAlpha()
-    .not().isEmpty()
+    .isAlpha().withMessage('Lastname must be alphabetic.')
+    .not().isEmpty().withMessage('Lastname field must not be empty')
     .trim()
     .escape(),(req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()){
-        console.log(errors);
-        return res.status(422).json({errors : errors.array()});
+        // console.log(errors);
+        // return res.status(422).json({errors : errors.array()});
+        return res.render('pages/settings', {
+            title : "Edit Profile",
+            data: req.session,
+            errors: errors.errors,
+            isMovie: true
+        });
     }else {
         let sql = `UPDATE users SET lastName = '${req.body.lastname}' WHERE username = '${req.session.username}'`;
         con.query(sql, (err, result) => {
@@ -56,12 +69,19 @@ router.post('/lastname', check('lastname')
 });
 
 router.post('/email', check('email')
+    .not().isEmpty().withMessage('Email field must not be empty')
     .isEmail()
     .normalizeEmail(),(req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()){
-        console.log(errors);
-        return res.status(422).json({errors : errors.array()});
+        // console.log(errors);
+        // return res.status(422).json({errors : errors.array()});
+        return res.render('pages/settings', {
+            title : "Edit Profile",
+            data: req.session,
+            errors: errors.errors,
+            isMovie: true
+        });
     }else {
         let sql = `UPDATE users SET email = '${req.body.email}' WHERE username = '${req.session.username}'`;
         con.query(sql, (err, result) => {
@@ -74,15 +94,21 @@ router.post('/email', check('email')
 });
 
 router.post('/username', check('username')
-    .isAlphanumeric()
-    .not().isEmpty()
+    .isAlphanumeric().withMessage('Username must be alphabetic or alphanumeric')
+    .not().isEmpty().withMessage('Username field must not be empty')
     .trim()
     .escape()
     .isLength({ min: 4 }),(req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()){
-        console.log(errors);
-        return res.status(422).json({errors : errors.array()});
+        // console.log(errors);
+        // return res.status(422).json({errors : errors.array()});
+        return res.render('pages/settings', {
+            title : "Edit Profile",
+            data: req.session,
+            errors: errors.errors,
+            isMovie: true
+        });
     }else {
         let sql = `UPDATE users SET username = '${req.body.username}' WHERE username = '${req.session.username}'`;
         con.query(sql, (err, result) => {
@@ -126,8 +152,14 @@ router.post('/password', [
     })], (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()){
-        console.log(errors);
-        return res.status(422).json({errors : errors.array()});
+        // console.log(errors);
+        // return res.status(422).json({errors : errors.array()});
+        return res.render('pages/settings', {
+            title : "Edit Profile",
+            data: req.session,
+            errors: errors.errors,
+            isMovie: true
+        });
     }else {
         let hash = req.session.password
         bcrypt.compare(req.body.oldPassword, hash, (err, response) => {
@@ -150,14 +182,20 @@ router.post('/password', [
 });
 
 router.post('/language', check('language')
-    .isAlpha()
-    .not().isEmpty()
+    .isAlpha().withMessage('Language must be alphabetic.')
+    .not().isEmpty().withMessage('Language field must not be empty')
     .trim()
     .escape(), (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()){
-        console.log(errors);
-        return res.status(422).json({errors : errors.array()});
+        // console.log(errors);
+        // return res.status(422).json({errors : errors.array()});
+        return res.render('pages/settings', {
+            title : "Edit Profile",
+            data: req.session,
+            errors: errors.errors,
+            isMovie: true
+        });
     }else {
         let sql = `UPDATE users SET language = '${req.body.language}' WHERE username = '${req.session.username}'`;
         con.query(sql, (err, result) => {

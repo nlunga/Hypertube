@@ -100,6 +100,7 @@ router.get('/stream/:mediaName', async (req, res) => {
     movieFormat.forEach((item, index, array) => {
         if (item.seeds === biggestSeeder){
             magnetLink = item.magnet;
+            // console.log(item);
         }
     });
     if (magnetLink != undefined) {

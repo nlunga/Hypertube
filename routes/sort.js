@@ -11,7 +11,7 @@ const apiKey = process.env.TMDB_API_KEY
 
 router.post('/movie', (req, res) => {
     let user = req.session;
-    console.log(req.body);
+    // console.log(req.body);
     let sortResult = req.body.sortResults;
     let popularUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=${sortResult}&language=en-US&include_adult=false&include_video=false&page=1`;
 
@@ -46,7 +46,7 @@ router.post('/movie', (req, res) => {
 
 router.post('/tv', (req, res) => {
     let user = req.session;
-    console.log(req.body);
+    // console.log(req.body);
     let sortResult = req.body.sortResults;
     let popularUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&sort_by=${sortResult}&language=en-US&include_adult=false&include_video=false&page=1`;
 

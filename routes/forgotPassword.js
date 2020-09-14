@@ -14,15 +14,25 @@ router.get('/', redirectDashboard, (req, res) => {
     let user = req.session;
     res.render('pages/forgotPassword', {
         title : "Forgot Password",
-        data: user
+        data: user,
+        errors: undefined
     });
 });
 
-router.post('/',check('email').isEmail().normalizeEmail(), (req, res) => {
+router.post('/', check('email')
+    .isEmail()
+    .not().isEmpty().withMessage('Email field must not be empty')
+    .normalizeEmail(), (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()){
-        console.log(errors);
-        return res.status(422).json({errors : errors.array()});
+        // console.log(errors);
+        // return res.status(422).json({errors : errors.array()});
+        let user = req.session;
+        res.render('pages/forgotPassword', {
+            title : "Forgot Password",
+            data: user,
+            errors: errors.errors
+        });
     }else {
         con.query(`SELECT * FROM users WHERE email = ? LIMIT 1`,[req.body.email], (err, result) => {
             if (err) throw err;

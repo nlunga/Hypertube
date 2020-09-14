@@ -96,6 +96,19 @@
                 </form>
             </div>
             <div class="col-md-8">
+                <div class="err">
+                    <% if (errors !== undefined) { %>
+                        <div class="alert alert-danger" role="alert">
+                            <ul>
+                                <% errors.forEach( (result) => { %>
+                                    <% if (result.msg !== "Invalid value") {%>
+                                        <li><%=result.msg%></li>
+                                    <% } %>
+                                <% }) %>
+                            </ul>
+                        </div>
+                    <% } %>
+                </div>
                 <form action="/settings/firstname" method="post">
                     <div class="form-group">
                         <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
