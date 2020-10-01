@@ -100,7 +100,7 @@ io.on('connection', (socket) => {
         console.log('comment: ');
         console.log(comment);
         if (comment.commentType === 'movie') {
-            let commentSql = `INSERT INTO comments (movieName, tvSeriesName, comment, username, imagePath) VALUES (?, ?, ?, ?, ?)`;
+            let commentSql = `INSERT INTO comments n`;
             con.query(commentSql, [comment.mediaData, "NULL", comment.commentData, comment.user, comment.image], (err, result) => {
                 if (err) throw err;
                 io.sockets.emit('message', comment);
