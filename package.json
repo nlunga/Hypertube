@@ -25,6 +25,7 @@
     "nodemailer": "^6.4.11",
     "passport": "^0.4.1",
     "passport-42": "^1.2.6",
+    "passport-google-oauth20": "^2.0.0",
     "socket.io": "^2.3.0",
     "torrent-indexer": "^1.2.1",
     "torrent-search-api": "^2.1.3",
