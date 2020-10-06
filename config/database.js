@@ -4,6 +4,7 @@ var userSql = "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY K
 var imagesSql = "CREATE TABLE IF NOT EXISTS images (id INT AUTO_INCREMENT PRIMARY KEY, imagePath VARCHAR(255) NOT NULL, username VARCHAR(255) NOT NULL)";
 var commentsSql = "CREATE TABLE IF NOT EXISTS comments (id INT AUTO_INCREMENT PRIMARY KEY, movieName VARCHAR(255) NOT NULL, tvSeriesName VARCHAR(255) NOT NULL, comment VARCHAR(255) NOT NULL, username VARCHAR(255) NOT NULL, imagePath VARCHAR(255) NOT NULL)";
 var mediaSql = "CREATE TABLE IF NOT EXISTS mediaInfo (id INT AUTO_INCREMENT PRIMARY KEY, mediaName VARCHAR(255) NOT NULL, mediaMagnet VARCHAR(255) NOT NULL, entryDate DATE NOT NULL DEFAULT current_timestamp(), mediaSize DECIMAL, currentSize DECIMAL, status TINYINT(4))";
+var viewedSql = "CREATE TABLE IF NOT EXISTS viewed (id INT AUTO_INCREMENT PRIMARY KEY, mediaName VARCHAR(255) NOT NULL, mediaRating VARCHAR(255) NOT NULL, releaseDate VARCHAR(255) NOT NULL, mediaPicture VARCHAR(255) NOT NULL, mediaLink VARCHAR(255) NOT NULL, username VARCHAR(255) NOT NULL)";
 
 conInit.query(`CREATE DATABASE IF NOT EXISTS Hypertube`, (err, result) => {
     if (err) throw err;
@@ -29,3 +30,8 @@ con.query(mediaSql, (err, result) => {
     if (err) throw err;
     console.log("MediaInfo Table created");
 });
+
+con.query(viewedSql, (err, result) => {
+    if (err) throw err;
+    console.log("Viewed Table created");
+})

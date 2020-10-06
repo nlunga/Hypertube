@@ -4,12 +4,15 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const bodyParser = require('body-parser');
 const path = require('path');
+const passport = require('passport');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const {conInit, con } = require('./config/connection');
 const dotenv = require('dotenv');
 
 dotenv.config();
+
+require('./routes/passport')(passport);
 
 const port = process.env.PORT;
 const dbHost = process.env.HOST;
@@ -23,6 +26,7 @@ const sess_sectret = process.env.SESS_SECRET;
 const index = require('./routes/index');
 const login = require('./routes/login');
 const register = require('./routes/register');
+const googleRegister = require('./routes/auth');
 const fortyTwoRegister = require('./routes/registerWith42');
 const confirmationMail = require('./routes/confirmationMail');
 const forgotPassword = require('./routes/forgotPassword');
@@ -35,6 +39,7 @@ const viewMore = require('./routes/viewMore');
 const viewProfile = require('./routes/viewProfile');
 const searchEngine = require('./routes/seachEngine');
 const sort = require('./routes/sort');
+const viewed = require('./routes/viewed');
 const downloads = require('./routes/downloads');
 const watch = require('./routes/watch');
 const test = require('./routes/test');
@@ -72,10 +77,16 @@ app.use(session({
     saveUninitialized: false
 }));
 
+// Passport Middleware
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 // using routes
 app.use('/', index);
 app.use('/login', login);
 app.use('/signup', register);
+app.use('/auth', googleRegister);
 app.use('/auth/42', fortyTwoRegister);
 app.use('/confirmation', confirmationMail);
 app.use('/forgotPassword', forgotPassword);
@@ -88,6 +99,7 @@ app.use('/title', viewMore);
 app.use('/viewProfile', viewProfile);
 app.use('/search', searchEngine);
 app.use('/sort', sort);
+app.use('/viewed', viewed);
 app.use('/download', downloads);
 app.use('/watch', watch);
 app.use('/test', test);
