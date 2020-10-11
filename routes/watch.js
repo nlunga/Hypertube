@@ -55,24 +55,31 @@ const dataStream = {
                           // Defaults to empty
 }
 
-router.get('/:mediaName',async (req, res) => {
+router.get('/:mediaName/:titleRoute/:mediaRanking/:releaseDate/:mediaPic',async (req, res) => {
     // console.log(req.params.mediaName);
     // console.log(req.params.titleRoute);
-
-    let id = req.params.titleRoute;
+    let mediaName = req.params.mediaName
+    let link = req.params.titleRoute;
+    let ranking = req.params.mediaRanking;
+    let mediaPic = req.params.mediaPic;
+    let releaseDate = req.params.releaseDate;
 
     // let tmpId = id.split('movieId=');
 
     let user = req.session;
     // let queryString = req.params.mediaName;
     res.render('pages/stream', {
-        title: req.params.mediaName,
-        mediaInfo: req.params.mediaName,
-        data: user
+        title: mediaName,
+        mediaInfo: mediaName,
+        data: user,
+        titleLink:link,
+        mediaRank: ranking,
+        poster:mediaPic,
+        mediaRelease: releaseDate
     });
 });
 
-router.get('/stream/:mediaName', async (req, res) => {
+router.get('/stream/:mediaName/:titleRoute/:mediaRanking/:mediaPic/:releaseDate', async (req, res) => {
     // console.log(req.params.mediaName);
     const torrentIndexer = new TorrentIndexer();
 
@@ -81,6 +88,13 @@ router.get('/stream/:mediaName', async (req, res) => {
     // Search '1080' in 'Movies' category and limit to 20 results
     const torrents = await TorrentSearchApi.search(req.params.mediaName, 'Video', 20);
 
+    let mediaName = req.params.mediaName
+    let link = req.params.titleRoute.split('=');
+    let firstPart = link[1].split('_');
+    let tmpLink = `/title/${firstPart[0]}/${firstPart[1]}`;
+    let ranking = req.params.mediaRanking;
+    let mediaPic = req.params.mediaPic;
+    let releaseDate = req.params.releaseDate;
     let movieFormat = [];
     let movieSeeder = [];
     torrents.forEach((item, index, array) => {
@@ -102,6 +116,16 @@ router.get('/stream/:mediaName', async (req, res) => {
             mediaData = item;
         }
     });
+
+    con.query(`SELECT * FROM viewed WHERE mediaName = ? AND username = ? LIMIT 1`, [mediaName, req.session.username], (err, dataStr) => {
+        if (err) throw err;
+        if (dataStr.length === 0) {
+            con.query(`INSERT INTO viewed (mediaName, mediaRating, releaseDate, mediaPicture, mediaLink, username) VALUES (?, ?, ?, ?, ?, ?)`, [req.params.mediaName, ranking, releaseDate, mediaPic, tmpLink, req.session.username], (err, data) => {
+                if (err) throw err;
+                console.log("1 record has been inserted");
+            });
+        }
+    })
 
     con.query(`SELECT * FROM mediaInfo WHERE mediaName = '${mediaData.title}' LIMIT 1`, (err, results) => {
         if (err) throw err;

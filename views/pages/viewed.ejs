@@ -71,25 +71,25 @@
             <div class="row">
                 <% popular.forEach((popularMovies) => { %>                
                     <div class="col-lg-2">
-                        <a href="/title/<%=pageNo%>/<%=popularMovies.id%>">
+                        <a href="<%=popularMovies.mediaLink%>">
 
-                            <% if (popularMovies.title.length > 8) { %>
-                                <% var str = popularMovies.title.slice(0, 9) %>
-                                <h6 class="mp-2"><%=str%>... <i class="fa fa-star" style="color:gold" aria-hidden="true"></i><span style="color:black;"> <small style="color: grey;"><%=popularMovies.vote_average%></small>/10</span></h6>
+                            <% if (popularMovies.mediaName.length > 8) { %>
+                                <% var str = popularMovies.mediaName.slice(0, 9) %>
+                                <h6 class="mp-2"><%=str%>... <i class="fa fa-star" style="color:gold" aria-hidden="true"></i><span style="color:black;"> <small style="color: grey;"><%=popularMovies.mediaRating%></small>/10</span></h6>
                             <% } else { %>
-                                <h6><%=popularMovies.title%> <i class="fa fa-star" style="color:gold" aria-hidden="true"></i><span style="color:black;"> <small style="color: grey;"><%=popularMovies.vote_average%></small>/10</span></h6>
+                                <h6><%=popularMovies.mediaName%> <i class="fa fa-star" style="color:gold" aria-hidden="true"></i><span style="color:black;"> <small style="color: grey;"><%=popularMovies.mediaRating%></small>/10</span></h6>
                             <% } %>
                             <!-- <div class="col-lg-20">
-                                <p class="mt-5 mt-lg-3"><%///=popularMovies.title%></p>
+                                <p class="mt-5 mt-lg-3"><%///=popularMovies.mediaName%></p>
                             </div> -->
-                            <% if (popularMovies.poster_path) { %>
-                                <img src="https://image.tmdb.org/t/p/w185/<%=popularMovies.poster_path%>" alt="<%=popularMovies.title%>"><br>
+                            <% if (popularMovies.mediaPicture) { %>
+                                <img src="https://image.tmdb.org/t/p/w185/<%=popularMovies.mediaPicture%>" alt="<%=popularMovies.mediaName%>"><br>
                             <% } else { %>
-                                <img class="poster-placeholder" src="https://moviereelist.com/wp-content/uploads/2019/07/poster-placeholder.jpg" alt="<%=popularMovies.title%>"><br>
+                                <img class="poster-placeholder" src="https://moviereelist.com/wp-content/uploads/2019/07/poster-placeholder.jpg" alt="<%=popularMovies.mediaName%>"><br>
                             <% } %>
                             
                         </a>
-                        <small id="releaseDate" class="text-muted">Released <% var mydate = new Date(popularMovies.release_date);%> <%=mydate.toDateString();%></small>
+                        <small id="releaseDate" class="text-muted">Released <% var mydate = new Date(popularMovies.releaseDate);%> <%=mydate.toDateString();%></small>
                     </div>
                     <% if (i%5 == 0) { %>
                         <div class="w-100"></div>

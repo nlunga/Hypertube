@@ -33,7 +33,8 @@ router.get('/:pageNo/:id', redirectLogin, (req, res) => {
                             pastComments: results,
                             isSeason: false,
                             mediaInfo: item,
-                            titleRoute: `pageNumber=${pageNo}&movieId=${req.params.id}`,
+                            // titleRoute: `{pageNumber=${pageNo}&movieId=${req.params.id}}`,
+                            titleRoute: `link=${pageNo}_${req.params.id}`,
                             genresName: genres,
                             isMovie: true
                         });
