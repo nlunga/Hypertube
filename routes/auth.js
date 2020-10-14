@@ -53,7 +53,7 @@ router.get('/google/callback', passport.authenticate('google', { failureRedirect
               title : "Sign Up",
               data: req.session,
               errors: [{
-                  msg: 'Email already exist',
+                  msg: 'User does not exist',
                   param: 'email',
                   location: 'body'
               }]
@@ -76,8 +76,6 @@ router.get('/google/callback', passport.authenticate('google', { failureRedirect
 });
 
 router.get('/42', passport.authenticate('42'));
-
-passport.authenticate('42', { failureRedirect: '/signup' })
 
 router.get('/42/callback', passport.authenticate('42', { failureRedirect: '/signup' }),(req, res) => {
     // Successful authentication, redirect home.
@@ -124,7 +122,7 @@ router.get('/42/callback', passport.authenticate('42', { failureRedirect: '/sign
               title : "Sign Up",
               data: req.session,
               errors: [{
-                  msg: 'Email already exist',
+                  msg: 'User does not exist',
                   param: 'email',
                   location: 'body'
               }]
@@ -136,6 +134,7 @@ router.get('/42/callback', passport.authenticate('42', { failureRedirect: '/sign
               req.session.firstname = req.user.name.givenName;
               req.session.lastname = req.user.name.familyName;
               req.session.username = req.user.username;
+              global.tempUser = req.user.username;
               req.session.email = req.user.emails[0].value;
               req.session.password = "";
               let user = req.session;
@@ -192,7 +191,7 @@ router.get('/facebook/callback', passport.authenticate('facebook', { failureRedi
             title : "Sign Up",
             data: req.session,
             errors: [{
-                msg: 'Email already exist',
+                msg: 'User does not exist',
                 param: 'email',
                 location: 'body'
             }]

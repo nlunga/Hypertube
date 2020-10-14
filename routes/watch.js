@@ -7,6 +7,8 @@ const {conInit, con } = require('../config/connection');
 const { movieGenres, tvGenres } = require('../genreId');
 const dotenv = require('dotenv');
 const fetch = require('node-fetch');
+const fs = require('fs');
+const paths = require('path');
 const TorrentIndexer = require("torrent-indexer");
 const TorrentSearchApi = require('torrent-search-api');
 var torrentStream = require('torrent-stream');
@@ -55,6 +57,8 @@ const dataStream = {
                           // Defaults to empty
 }
 
+// var tempUser = '';
+
 router.get('/:mediaName/:titleRoute/:mediaRanking/:releaseDate/:mediaPic',async (req, res) => {
     // console.log(req.params.mediaName);
     // console.log(req.params.titleRoute);
@@ -63,6 +67,9 @@ router.get('/:mediaName/:titleRoute/:mediaRanking/:releaseDate/:mediaPic',async 
     let ranking = req.params.mediaRanking;
     let mediaPic = req.params.mediaPic;
     let releaseDate = req.params.releaseDate;
+    
+    global.tempUser = req.session.username;
+    
 
     // let tmpId = id.split('movieId=');
 
@@ -80,10 +87,11 @@ router.get('/:mediaName/:titleRoute/:mediaRanking/:releaseDate/:mediaPic',async 
 });
 
 router.get('/stream/:mediaName/:titleRoute/:mediaRanking/:mediaPic/:releaseDate', async (req, res) => {
+    // console.log('This is a username: ' + tempUser);
     // console.log(req.params.mediaName);
     const torrentIndexer = new TorrentIndexer();
 
-    TorrentSearchApi.enableProvider('ThePirateBay'); 
+    TorrentSearchApi.enableProvider('ThePirateBay');
 
     // Search '1080' in 'Movies' category and limit to 20 results
     const torrents = await TorrentSearchApi.search(req.params.mediaName, 'Video', 20);
@@ -117,10 +125,10 @@ router.get('/stream/:mediaName/:titleRoute/:mediaRanking/:mediaPic/:releaseDate'
         }
     });
 
-    con.query(`SELECT * FROM viewed WHERE mediaName = ? AND username = ? LIMIT 1`, [mediaName, req.session.username], (err, dataStr) => {
+    con.query(`SELECT * FROM viewed WHERE mediaName = ? AND username = ? LIMIT 1`, [mediaName, tempUser], (err, dataStr) => {
         if (err) throw err;
         if (dataStr.length === 0) {
-            con.query(`INSERT INTO viewed (mediaName, mediaRating, releaseDate, mediaPicture, mediaLink, username) VALUES (?, ?, ?, ?, ?, ?)`, [req.params.mediaName, ranking, releaseDate, mediaPic, tmpLink, req.session.username], (err, data) => {
+            con.query(`INSERT INTO viewed (mediaName, mediaRating, releaseDate, mediaPicture, mediaLink, username) VALUES (?, ?, ?, ?, ?, ?)`, [req.params.mediaName, ranking, releaseDate, mediaPic, tmpLink, tempUser], (err, data) => {
                 if (err) throw err;
                 console.log("1 record has been inserted");
             });
@@ -192,51 +200,37 @@ router.get('/stream/:mediaName/:titleRoute/:mediaRanking/:mediaPic/:releaseDate'
         }else {
             //////////////////////////////
             //read locally
-            
+            const path = `../tmp/media/${mediaName}`
+            const stat = fs.statSync(path);
+            const fileSize = stat.size;
+            const range = req.headers.range;
+
+            if (range) {
+                const parts = range.replace(/bytes=/, "").split("-");
+                const start = parseInt(parts[0], 10);
+                const end = parts[1] ? parseInt(parts[1], 10) : fileSize-1;
+
+                const chunksize = (end-start)+1;
+                const file = fs.createReadStream(path, {start, end});
+                const head = {
+                    'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+                    'Accept-Ranges': 'bytes',
+                    'Content-Length': chunksize,
+                    'Content-Type': 'video/mp4',
+                }
+
+                res.writeHead(206, head);
+                file.pipe(res);
+            } else {
+                const head = {
+                    'Content-Length': fileSize,
+                    'Content-Type': 'video/mp4',
+                }
+                res.writeHead(200, head);
+                fs.createReadStream(path).pipe(res);
+            }
         }
     });
-
-    // if (magnetLink != undefined) {
-    //     var engine = torrentStream(magnetLink, dataStream);
-    //     engine.on('ready', function() {
-    //         engine.files.forEach(function(file) {
-    //             var pattMp4 = new RegExp(".mp4");
-    //             var pattMkv = new RegExp(".mkv");
-    //             var form;
-    //             if (pattMp4.test(file.name)) {
-    //                 form = ".mp4";
-    //             } else if (pattMkv.test(file.name)) {
-    //                 form = ".mkv";
-    //             }
-
-    //             if (form != undefined)
-    //             {
-    //                 const fileSize = engine.files[0].length;
-    //                 const range = req.headers.range;
-    
-    //                 if (range) {
-    //                     const parts = range.replace(/bytes=/, "").split("-");
-    //                     const start = parseInt(parts[0], 10);
-    //                     const end = parts[1] ? parseInt(parts[1], 10) : fileSize-1;
-    
-    //                     const chunksize = (end-start)+1;
-    //                     // const file = file.createReadStream(moviePath, {start, end});
-    //                     const head = {
-    //                         'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-    //                         'Accept-Ranges': 'bytes',
-    //                         'Content-Length': chunksize,
-    //                         'Content-Type': `video/${form}`,
-    //                     }
-    //                     res.writeHead(206, head);
-    //                     var stream = file.createReadStream({start, end});
-    //                     stream.pipe(res);
-    //                 }
-    //             }
-    //         });
-    //     }).on('download', () => {
-    //         console.log('percentage: ' + engine.swarm.downloaded);
-    //     })
-    // }
 });
 
 module.exports = router;
