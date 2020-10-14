@@ -29,10 +29,6 @@ passport.deserializeUser(function(user, done) {
     done(null, user);
 });
 
-console.log(process.env.FORTYTWO_APP_ID);
-console.log(process.env.FORTYTWO_APP_SECRET);
-console.log(process.env.FORTYTWO_APP_CALLBACK_URL);
-
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
