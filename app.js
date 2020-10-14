@@ -12,7 +12,7 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-require('./routes/passport')(passport);
+require('./routes/passport');
 
 const port = process.env.PORT;
 const dbHost = process.env.HOST;
@@ -26,8 +26,7 @@ const sess_sectret = process.env.SESS_SECRET;
 const index = require('./routes/index');
 const login = require('./routes/login');
 const register = require('./routes/register');
-const googleRegister = require('./routes/auth');
-const fortyTwoRegister = require('./routes/registerWith42');
+const oauth = require('./routes/auth');
 const confirmationMail = require('./routes/confirmationMail');
 const forgotPassword = require('./routes/forgotPassword');
 const resetPassword = require('./routes/resetPassword');
@@ -86,8 +85,7 @@ app.use(passport.session());
 app.use('/', index);
 app.use('/login', login);
 app.use('/signup', register);
-app.use('/auth', googleRegister);
-app.use('/auth/42', fortyTwoRegister);
+app.use('/auth', oauth);
 app.use('/confirmation', confirmationMail);
 app.use('/forgotPassword', forgotPassword);
 app.use('/resetPassword', resetPassword);
@@ -104,6 +102,13 @@ app.use('/download', downloads);
 app.use('/watch', watch);
 app.use('/test', test);
 app.use('/logout', logout);
+
+app.get('/drop', (req, res) => {
+    con.query('DROP DATABASE hypertube', (err, result) => {
+        if (err) throw err;
+        console.log('DB dropped');
+    })
+})
 
 io.on('connection', (socket) => {
     // console.log('a user connected');

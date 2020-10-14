@@ -1,41 +1,70 @@
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
+// const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const {conInit, con } = require('../config/connection');
 const { v1: uuidv1 } = require('uuid');
 const emailToken = uuidv1();
+const dotenv = require('dotenv');
 
-module.exports = function(passport) {
-    passport.use(new GoogleStrategy({
-        clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: '/auth/google/callback'
-    },
-    async(accessToken, refreshToken, profile, done) => {
-        // console.log(profile);
-        // console.log(profile.name.givenName);
-        // console.log(profile.name.familyName);
-        // console.log(profile.displayName);
-        let sql = `SELECT * FROM users WHERE username = '${profile.displayName}'`;
-        con.query(sql, (err, result) => {
-            if (err) throw err;
-            if (result.length === 0) {
-                let confirmed = 1;
-                con.query("INSERT INTO users (firstName, lastName, userName, email, password, languagePreference, verified, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [profile.name.givenName, profile.name.familyName, profile.displayName, "NULL", "NULL", "English", confirmed, emailToken], (err, results) => {
-                    if (err) throw err;
-                    console.log("1 record inserted");
-                });
-            }else {
-                done(null, result);
-            }
-        });
-    }))
+dotenv.config();
 
-    passport.serializeUser((user, done) => {
-        done(null, user.id);
-    });
-      
-    passport.deserializeUser((id, done) => {
-        User.findById(id, (err, user) => {
-            done(err, user);
-        });
-    });
-}
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+var FortyTwoStrategy = require('passport-42').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
+const passport = require('passport');
+
+passport.serializeUser(function(user, done) {
+    /*
+    From the user take just the id (to minimize the cookie size) and just pass the id of the user
+    to the done callback
+    PS: You dont have to do it like this its just usually done like this
+    */
+    done(null, user);
+});
+  
+passport.deserializeUser(function(user, done) {
+    /*
+    Instead of user this function usually recives the id 
+    then you use the id to select the user from the db and pass the user obj to the done callback
+    PS: You can later access this data in any routes in: req.user
+    */
+    done(null, user);
+});
+
+console.log(process.env.FORTYTWO_APP_ID);
+console.log(process.env.FORTYTWO_APP_SECRET);
+console.log(process.env.FORTYTWO_APP_CALLBACK_URL);
+
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.GOOGLE_CALLBACK_URL,
+    passReqToCallback: true
+  },
+  function(request, accessToken, refreshToken, profile, cb) {
+    return cb(null, profile);
+  }
+));
+
+passport.use(new FortyTwoStrategy({
+    clientID: process.env.FORTYTWO_APP_ID,
+    clientSecret: process.env.FORTYTWO_APP_SECRET,
+    callbackURL: process.env.FORTYTWO_APP_CALLBACK_URL,
+    // callbackURL: 'keahjwfhj vneiugraelgprjgoiregvrjnirambre bio'
+    // passReqToCallback: true
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    // console.log("FAIL");
+    // console.log(profile);
+    return cb(null, profile);
+  }
+));
+
+passport.use(new FacebookStrategy({
+  clientID: process.env.FACEBOOK_APP_ID,
+  clientSecret: process.env.FACEBOOK_APP_SECRET,
+  callbackURL: process.env.FACEBOOK_APP_CALLBACK_URL,
+  profileFields   : ['id','displayName','name','gender','picture.type(large)','email']
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    return cb(null, profile);
+  }
+));

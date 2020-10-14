@@ -8,7 +8,8 @@ const bcrypt = require('bcrypt');
 
 router.get('/', redirectDashboard, (req, res) => {
     let user = req.session;
-    let err = undefined
+    let err = undefined;
+    global.CURRENT_PAGE = 'login';
     res.render('pages/login', {
         title : "Login",
         data: user,

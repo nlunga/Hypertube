@@ -20,6 +20,7 @@ const port = process.env.PORT;
 router.get('/', redirectDashboard, (req, res) => { 
     let user = req.session;
     let err = undefined
+    global.CURRENT_PAGE = 'signup';
     res.render('pages/register', {
         title : "Sign Up",
         data: user,
@@ -73,49 +74,64 @@ router.post('/', [
     }else {
         bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
             var confirmed = 0;
-            con.query("INSERT INTO users (firstName, lastName, userName, email, password, languagePreference, verified, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [req.body.firstname, req.body.lastname, req.body.username, req.body.email, hash, "English", confirmed, emailToken], (err, result) => {
+            con.query(`SELECT * FROM users WHERE email = ? LIMIT 1`, [req.body.email], (err, dbData) => {
                 if (err) throw err;
-                console.log("1 record inserted");
-            });
+                if (dbData.length === 0) {
+                    con.query("INSERT INTO users (firstName, lastName, userName, email, password, languagePreference, verified, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [req.body.firstname, req.body.lastname, req.body.username, req.body.email, hash, "English", confirmed, emailToken], (err, result) => {
+                        if (err) throw err;
+                        console.log("1 record inserted");
+                    });
 
-            const transporter = nodemailer.createTransport({
-                secure: true,
-                service: 'gmail',
-                auth: {
-                    user: 'matchamanagment@gmail.com',
-                    pass: 'welcometomatcha'
-                    // pass: '9876543210khulu'
-                },
-                tls: {
-                    // do not fail on invalid certs
-                    rejectUnauthorized: false
-                }
-            });
-            // var emailToken = "jhdashghohwg2gwg";
-            const conUrl = `http://localhost:${port}/confirmation/${emailToken}`;
-            const mailOptions = {
-                from: 'matchamanagment@gmail.com',
-                to: req.body.email,
-                subject: 'Please Verify your email',
-                text: `That was easy!`,
-                html: `Please click on the link bellow to confirm your email:<br>
+                    const transporter = nodemailer.createTransport({
+                        secure: true,
+                        service: 'gmail',
+                        auth: {
+                            user: 'matchamanagment@gmail.com',
+                            pass: 'welcometomatcha'
+                            // pass: '9876543210khulu'
+                        },
+                        tls: {
+                            // do not fail on invalid certs
+                            rejectUnauthorized: false
+                        }
+                    });
+                    // var emailToken = "jhdashghohwg2gwg";
+                    const conUrl = `http://localhost:${port}/confirmation/${emailToken}`;
+                    const mailOptions = {
+                        from: 'matchamanagment@gmail.com',
+                        to: req.body.email,
+                        subject: 'Please Verify your email',
+                        text: `That was easy!`,
+                        html: `Please click on the link bellow to confirm your email:<br>
+                                
+                        <a href="${conUrl}"><button type="button" class="btn btn-outline-secondary">Confirm</button></a>
+                        `
+                    };
                         
-                <a href="${conUrl}"><button type="button" class="btn btn-outline-secondary">Confirm</button></a>
-                `
-            };
-                
-            transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    console.log(error);
-                } else {
-                    console.log('Email sent: ' + info.response);
+                    transporter.sendMail(mailOptions, (error, info) => {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            console.log('Email sent: ' + info.response);
+                        }
+                    });
+        
+                    res.render('pages/register-success', {
+                        title: "Verify Account",
+                        data: req.body
+                    });
+                }else {
+                    return res.render('pages/register', {
+                        title : "Sign Up",
+                        data: req.session,
+                        errors: [{
+                            msg: 'Email already exist',
+                            param: 'email',
+                            location: 'body'
+                        }]
+                    });
                 }
-            });
-
-            res.render('pages/register-success', {
-                title: "Verify Account",
-                data: req.body
-            });
+            })
         });
     }
 });
