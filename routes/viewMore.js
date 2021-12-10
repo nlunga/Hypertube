@@ -4,6 +4,7 @@ const {redirectLogin, redirectDashboard} = require('./accessControls');
 const {conInit, con } = require('../config/connection');
 const dotenv = require('dotenv');
 const fetch = require('node-fetch');
+const Comment = require('../models/Comment');
 const { movieGenres, tvGenres } = require('../genreId');
 const { SanitizersImpl } = require('express-validator/src/chain');
 
@@ -11,101 +12,118 @@ dotenv.config();
 
 const apiKey = process.env.TMDB_API_KEY
 
-router.get('/:pageNo/:id', redirectLogin, (req, res) => {
+router.get('/:pageNo/:id', redirectLogin, async (req, res) => {
     let user = req.session;
     let pageNo = req.params.pageNo;
-
+   
     let popularUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=popularity.desc&language=en-US&include_adult=false&include_video=false&page=${pageNo}`;
-    let latestUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&certification_country=US&include_adult=false&include_video=false&page=${pageNo}&primary_release_year=2020`
+    // let latestUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&certification_country=US&include_adult=false&include_video=false&page=${pageNo}&primary_release_year=2020`
 
-    fetch(popularUrl)
-        .then(response => response.json())
-        .then(dat => {
-            var genres = movieGenres;
-            dat.results.forEach((item, index, array) => {
-                if (item.id == req.params.id) {
-                    con.query('SELECT * FROM comments', (err, results) => {
-                        if (err) throw err;
-                        // console.log(results);
-                        res.render('pages/title',{
-                            title: item.name,
-                            data: user,
-                            pastComments: results,
-                            isSeason: false,
-                            mediaInfo: item,
-                            // titleRoute: `{pageNumber=${pageNo}&movieId=${req.params.id}}`,
-                            titleRoute: `link=${pageNo}_${req.params.id}`,
-                            genresName: genres,
-                            isMovie: true
-                        });
-                    });
-                    // return 0;
-                }
-            });
-        })
+    const response = await fetch(popularUrl);
+    const movies = await response.json();
+    
+    const genres = movieGenres;
+
+    var output = movies.results.filter(function(value){ return value.id==req.params.id;});
+
+    let comments = await Comment.find({});
+    if (!comments) return console.log('error');
+
+    return res.render('pages/title',{
+        title: output[0].title,
+        data: user,
+        pastComments: comments,
+        isSeason: false,
+        mediaInfo: output[0],
+        // titleRoute: `{pageNumber=${pageNo}&movieId=${req.params.id}}`,
+        titleRoute: `link=${pageNo}_${req.params.id}`,
+        genresName: genres,
+        isMovie: true
+    });
 });
 
-router.get('/movies/:pageNo/:id', redirectLogin, (req, res) => {
+router.get('/movies/:pageNo/:id', redirectLogin, async (req, res) => {
     let user = req.session;
     let pageNo = req.params.pageNo;
     
     let popularUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=popularity.desc&language=en-US&include_adult=false&include_video=false&page=${pageNo}`;
     let latestUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&certification_country=US&include_adult=false&include_video=false&page=${pageNo}&primary_release_year=2020`
 
-    fetch(popularUrl)
-        .then(response => response.json())
-        .then(dat => {
-            var genres = movieGenres;
-            dat.results.forEach((item, index, array) => {
-                if (item.id == req.params.id) {
-                    con.query('SELECT * FROM comments', (err, results) => {
-                        if (err) throw err;
-                        res.render('pages/title',{
-                            title: item.title,
-                            data: user,
-                            pastComments: results,
-                            isSeason: false,
-                            mediaInfo: item,
-                            genresName: genres,
-                            isMovie: true
-                        });
-                    });
-                    // return 0;
-                }
-            });
-        })
+    const response = await fetch(popularUrl);
+    const movies = await response.json();
+    const genres = movieGenres;
+
+    var output = movies.results.filter(function(value){ return value.id==req.params.id;});
+
+    let comments = await Comment.find({});
+    if (!comments) return console.log('error');
+
+    return res.render('pages/title',{
+        title: output[0].title,
+        data: user,
+        pastComments: comments,
+        isSeason: false,
+        isSeason: false,
+        mediaInfo: output[0],
+        // titleRoute: `{pageNumber=${pageNo}&movieId=${req.params.id}}`,
+        titleRoute: `link=${pageNo}_${req.params.id}`,
+        genresName: genres,
+        isMovie: true
+    });
 });
 
-router.get('/tv/:pageNo/:id', redirectLogin, (req, res) => {
+router.get('/tv/:pageNo/:id', redirectLogin, async (req, res) => {
     let user = req.session;
     let pageNo = req.params.pageNo;
     let tvId = req.params.id;
     
     let popularUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&sort_by=popularity.desc&language=en-US&include_adult=false&include_video=false&page=${pageNo}`;
-    let tvUrl = `https://api.themoviedb.org/3/tv/${tvId}?api_key=${apiKey}&language=en-US`
+    let tvUrl = `https://api.themoviedb.org/3/tv/${tvId}?api_key=${apiKey}&language=en-US`;
+
+    let comments = await Comment.find({});
+    if (!comments) return console.log('error');
 
     fetch(tvUrl)
         .then(response => response.json())
-        .then(dat => {
-            // console.log(dat);
+        .then( dat => {
             var genres = tvGenres;
-            con.query('SELECT * FROM comments', (err, results) => {
-                if (err) throw err;
-                res.render('pages/title',{
-                    title: dat.name,
-                    data: user,
-                    pastComments: results,
-                    isSeason: false,
-                    mediaInfo: dat,
-                    titleRoute: `pageNumber=${pageNo}&movieId=${tvId}`,
-                    genresName: genres,
-                    isMovie: false
-                });
+            res.render('pages/title',{
+                title: dat.name,
+                data: user,
+                pastComments: comments,
+                isSeason: false,
+                mediaInfo: dat,
+                titleRoute: `pageNumber=${pageNo}&movieId=${tvId}`,
+                genresName: genres,
+                isMovie: false
             });
         })
+
+        // var start = performance.now()
+
+        // const response = await fetch(tvUrl);
+        // const tvSeries = await response.json();
+    
+        // const genres = tvGenres;
+    
+        // let comments = await Comment.find({});
+        // if (!comments) return console.log('error');
+        // var end = performance.now()
+        // console.log(`This is the time it took ${end - start} milliseconds` )
+    
+        // return res.render('pages/title',{
+        //     title: tvSeries.name,
+        //     data: user,
+        //     pastComments: comments,
+        //     isSeason: false,
+        //     mediaInfo: tvSeries,
+        //     titleRoute: `pageNumber=${pageNo}&movieId=${tvId}`,
+        //     genresName: genres,
+        //     isMovie: false
+        // });
 });
 
-router.get('/tv/:pageNo/:id/:season/:episode', (req, res) => {
+router.get('/tv/:pageNo/:id/:season/:episode', async (req, res) => {
     let user = req.session;
     let pageNo = req.params.pageNo;
     let tvId = req.params.id;
@@ -125,28 +143,26 @@ router.get('/tv/:pageNo/:id/:season/:episode', (req, res) => {
         var epi = `e${episode[1]}`;
     }
     let tvUrl = `https://api.themoviedb.org/3/tv/${tvId}?api_key=${apiKey}&language=en-US`
-
+    let comments = await Comment.find({});
+    if (!comments) return console.log('error');
     fetch(tvUrl)
         .then(response => response.json())
         .then(dat => {
             // console.log(dat);
             var genres = tvGenres;
-            con.query('SELECT * FROM comments', (err, results) => {
-                if (err) throw err;
-                res.render('pages/title',{
-                    title: dat.name,
-                    data: user,
-                    pastComments: results,
-                    isSeason: true,
-                    seasonData: seasonNo,
-                    episodeData: episodeNo,
-                    seaEpi: `${sea}${epi}`,
-                    seaName:  `${dat.name} s${sea}e${epi}`,
-                    titleRoute: `pageNumber=${pageNo}&movieId=${tvId}`,
-                    mediaInfo: dat,
-                    genresName: genres,
-                    isMovie: false
-                });
+            res.render('pages/title',{
+                title: dat.name,
+                data: user,
+                pastComments: comments,
+                isSeason: true,
+                seasonData: seasonNo,
+                episodeData: episodeNo,
+                seaEpi: `${sea}${epi}`,
+                seaName:  `${dat.name} s${sea}e${epi}`,
+                titleRoute: `pageNumber=${pageNo}&movieId=${tvId}`,
+                mediaInfo: dat,
+                genresName: genres,
+                isMovie: false
             });
         })
 })

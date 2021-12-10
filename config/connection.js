@@ -1,39 +1,14 @@
-const mysql = require('mysql');
-const dotenv = require('dotenv');
+const mongoose = require('mongoose');
 
-dotenv.config();
+mongoose.Promise = global.Promise;
 
+const url = process.env.DB_CONNECTION_URI;
 
-const dbHost = process.env.HOST;
-const dbUser = process.env.USER;
-const dbName = process.env.DB_NAME;
+mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true});
+const db = mongoose.connection
+    .once('open', () => console.log('Connected to MongoDB'))
+    .on('error', (error) => {
+        console.log(`Connection error: ${error}`);
+    });
 
-var conInit = mysql.createConnection({
-    host: dbHost,
-    user: dbUser,
-    port: 3306,
-    password: ""
-});
-
-conInit.connect((err) =>{
-    if (err) throw err;
-});
-
-var con = mysql.createConnection({
-    host: dbHost,
-    user: dbUser,
-    port: 3306,
-    password: "",
-    database: dbName
-});
-
-
-con.connect((err) =>{
-    if (err) throw err;
-    console.log('Database Connected');
-});
-
-module.exports = {
-    conInit,
-    con
-};
+module.exports = db;
